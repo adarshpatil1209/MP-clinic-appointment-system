@@ -1,0 +1,62 @@
+/* MediSlot — Design Tokens
+   Direction: "Deep Ink + Amber" — near-black base, one confident amber
+   accent, coral reserved strictly for alerts. Single source of truth
+   for color, type, spacing, and layout primitives. */
+
+:root {
+  /* Color — base surfaces */
+  --bg: #12181F;
+  --surface: #1A222B;
+  --surface-raised: #202A35;
+
+  /* Color — text */
+  --text: #F4F3F0;
+  --text-muted: #8B93A0;
+  --border: #2A323D;
+
+  /* Color — accent / alert (one each, by design) */
+  --accent: #E8A33D;
+  --accent-dim: rgba(232, 163, 61, 0.14);
+  --accent-strong: #F2B85B;
+
+  --alert: #FF6B5E;
+  --alert-dim: rgba(255, 107, 94, 0.14);
+
+  --complete-dim: rgba(139, 147, 160, 0.14);
+
+  --white: #FFFFFF;
+
+  /* Type */
+  --font-display: 'Newsreader', Georgia, serif;
+  --font-body: 'Public Sans', -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', monospace;
+
+  --fs-display-xl: 3.5rem;
+  --fs-display-l: 2.25rem;
+  --fs-heading: 1.5rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-mono: 0.9375rem;
+
+  --lh-tight: 1.1;
+  --lh-normal: 1.6;
+
+  /* Spacing — 8px base grid */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-10: 80px;
+  --space-12: 96px;
+
+  /* Layout */
+  --max-width: 1200px;
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --glow-accent: drop-shadow(0 0 6px rgba(232, 163, 61, 0.45));
+  --border-hairline: 1px solid var(--border);
+}

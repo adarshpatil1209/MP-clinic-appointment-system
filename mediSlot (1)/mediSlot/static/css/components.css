@@ -1,0 +1,539 @@
+/* MediSlot — Components
+   Built on Bootstrap 5 utilities/grid. Custom CSS covers only what the
+   design system needs beyond Bootstrap: tokens, type scale, pulse motif,
+   card treatments, and motion. */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  color: var(--text);
+  background: var(--bg);
+}
+
+.container-ms {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-3);
+}
+
+/* ---------- Focus ring (accessibility floor) ---------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------- Typography ---------- */
+.display-xl {
+  font-family: var(--font-display);
+  font-size: var(--fs-display-xl);
+  font-weight: 500;
+  font-style: normal;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.display-l {
+  font-family: var(--font-display);
+  font-size: var(--fs-display-l);
+  font-weight: 500;
+  line-height: var(--lh-tight);
+  color: var(--text);
+}
+
+.heading {
+  font-family: var(--font-body);
+  font-size: var(--fs-heading);
+  font-weight: 600;
+}
+
+.text-muted-ms {
+  color: var(--text-muted);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.01em;
+}
+
+/* ---------- Nav ---------- */
+.ms-nav {
+  border-bottom: var(--border-hairline);
+  background: var(--bg);
+}
+
+.ms-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--space-2);
+}
+
+.ms-logo {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.ms-logo:hover {
+  color: var(--text);
+}
+
+.ms-nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ms-nav__link {
+  font-size: var(--fs-small);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.ms-nav__link:hover {
+  color: var(--accent);
+}
+
+/* ---------- Buttons ---------- */
+.btn-ms {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-btn);
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+
+.btn-ms-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.btn-ms-primary:hover {
+  color: var(--bg);
+  background: var(--accent-strong);
+  box-shadow: 0 0 0 1px var(--accent-dim), 0 4px 16px rgba(232, 163, 61, 0.25);
+}
+
+/* One-time hover sweep — the signature motion on primary buttons */
+.btn-ms-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 45%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+}
+
+.btn-ms-primary:hover::after {
+  animation: btn-sweep 400ms ease forwards;
+}
+
+@keyframes btn-sweep {
+  to {
+    transform: translateX(120%);
+  }
+}
+
+.btn-ms-secondary {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-ms-secondary:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  padding-block: var(--space-10) var(--space-8);
+  overflow: hidden;
+}
+
+.hero__bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.30;
+  filter: saturate(0.85);
+  z-index: 0;
+}
+
+.hero__bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 24, 31, 0.55) 0%,
+    rgba(18, 24, 31, 0.88) 100%
+  );
+  z-index: 1;
+}
+
+.hero__grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: var(--space-6);
+  align-items: center;
+}
+
+.hero__eyebrow {
+  margin-bottom: var(--space-2);
+}
+
+.hero__title {
+  margin-bottom: var(--space-3);
+}
+
+.hero__subhead {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  max-width: 46ch;
+  margin-bottom: var(--space-4);
+}
+
+.hero__ctas {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.hero__visual {
+  border: var(--border-hairline);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  box-shadow: var(--shadow-elevated);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 320px;
+}
+
+.hero__visual-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.hero__visual-label .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(232, 163, 61, 0.7);
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* ---------- Pulse-line (signature motif) ---------- */
+.pulse-svg path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: var(--glow-accent);
+}
+
+.pulse-svg--draw path {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+}
+
+.pulse-svg--draw.in-view path {
+  animation: pulse-draw 1400ms ease forwards;
+}
+
+@keyframes pulse-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Divider variant — static line used between sections, in-view draws once */
+.pulse-divider {
+  width: 100%;
+  height: 40px;
+  margin-block: var(--space-2);
+  display: block;
+}
+
+/* Loading state — pulse "beats" instead of a spinner */
+.pulse-loading path {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 0;
+  animation: pulse-beat 1600ms ease-in-out infinite;
+}
+
+@keyframes pulse-beat {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1.08);
+  }
+}
+
+/* ---------- How it works ---------- */
+.steps {
+  padding-block: var(--space-8);
+}
+
+.step-card {
+  border: var(--border-hairline);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: var(--space-3);
+  height: 100%;
+}
+
+.step-card__index {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--accent);
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+.step-card__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: var(--space-1);
+}
+
+.step-card__body {
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+}
+
+/* ---------- Specializations ---------- */
+.specializations {
+  padding-block: var(--space-8);
+}
+
+.spec-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: var(--border-hairline);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: var(--space-2) var(--space-3);
+  text-decoration: none;
+  color: var(--text);
+  height: 100%;
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.spec-chip:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-elevated);
+  transform: translateY(-2px);
+}
+
+.spec-chip__name {
+  font-weight: 600;
+}
+
+.spec-chip__count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+/* ---------- Status badges (design-system baseline for later pages) ---------- */
+.badge-ms {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.badge-ms--pending {
+  background: var(--accent-dim);
+  color: var(--accent-strong);
+}
+
+.badge-ms--confirmed {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.badge-ms--completed {
+  background: var(--complete-dim);
+  color: var(--text-muted);
+}
+
+.badge-ms--cancelled {
+  background: var(--alert-dim);
+  color: var(--alert);
+}
+
+/* ---------- Footer ---------- */
+.ms-footer {
+  border-top: var(--border-hairline);
+  padding-block: var(--space-6);
+  margin-top: var(--space-6);
+}
+
+.ms-footer__grid {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.ms-footer__brand {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  color: var(--text);
+}
+
+.ms-footer__links {
+  display: flex;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ms-footer__links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: var(--fs-small);
+}
+
+.ms-footer__links a:hover {
+  color: var(--accent);
+}
+
+.ms-footer__meta {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  margin-top: var(--space-3);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991px) {
+  .hero__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .display-xl {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .display-xl {
+    font-size: 2rem;
+  }
+
+  .hero {
+    padding-block: var(--space-6) var(--space-4);
+  }
+
+  .hero__bg-video {
+    display: none;
+  }
+
+  .hero__bg-overlay {
+    background: var(--bg);
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .pulse-svg--draw path {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .pulse-loading path {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .btn-ms-primary:hover::after {
+    animation: none;
+    display: none;
+  }
+
+  .spec-chip:hover {
+    transform: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero__bg-video {
+    display: none;
+  }
+
+  .hero__bg-overlay {
+    background: var(--bg);
+  }
+}

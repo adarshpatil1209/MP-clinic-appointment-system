@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediSlot — Book with clarity, not chaos</title>
+  <meta name="description" content="MediSlot: find a doctor, see real open slots, and book a conflict-free appointment in minutes." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../static/css/tokens.css" />
+  <link rel="stylesheet" href="../static/css/components.css" />
+</head>
+<body>
+
+  <!-- Nav -->
+  <header class="ms-nav">
+    <div class="container-ms ms-nav__inner">
+      <a class="ms-logo" href="landing.html">MediSlot</a>
+      <nav class="ms-nav__links">
+        <a class="ms-nav__link" href="doctors.html">Find a Doctor</a>
+        <a class="ms-nav__link" href="login.html">Log in</a>
+        <a class="btn-ms btn-ms-primary" href="register.html">Register</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <video class="hero__bg-video" autoplay muted loop playsinline data-reduced-motion-pause>
+      <source src="../static/video.mp4" type="video/mp4" />
+    </video>
+    <div class="hero__bg-overlay" aria-hidden="true"></div>
+    <div class="container-ms hero__grid">
+      <div>
+        <span class="eyebrow hero__eyebrow">Clinic appointments, done right</span>
+        <h1 class="display-xl hero__title">Book with clarity,<br />not chaos.</h1>
+        <p class="hero__subhead">
+          Find the right doctor, see real open slots, and book in minutes.
+          Patients and doctors work from the same live schedule, so nothing
+          ever gets double-booked.
+        </p>
+        <div class="hero__ctas">
+          <a class="btn-ms btn-ms-primary" href="doctors.html">Find a Doctor</a>
+          <a class="btn-ms btn-ms-secondary" href="login.html">I'm a doctor</a>
+        </div>
+      </div>
+
+      <div class="hero__visual">
+        <div class="hero__visual-label">
+          <span><span class="dot"></span>Live slot status</span>
+          <span>Aug 15, 2026</span>
+        </div>
+        <svg class="pulse-svg pulse-svg--draw" data-pulse="hero" viewBox="0 0 600 120" aria-hidden="true">
+          <path d="M0,60 L150,60 L175,20 L200,100 L225,10 L250,110 L275,60 L340,60 L360,45 L380,60 L600,60" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <svg class="pulse-divider pulse-svg pulse-svg--draw" data-pulse="divider" viewBox="0 0 1200 60" aria-hidden="true">
+    <path d="M0,30 L500,30 L525,10 L550,50 L575,30 L1200,30" />
+  </svg>
+
+  <!-- How it works -->
+  <section class="steps">
+    <div class="container-ms">
+      <span class="eyebrow">How it works</span>
+      <h2 class="display-l mb-4">Three steps, one live schedule.</h2>
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <div class="step-card">
+            <span class="step-card__index mono">01 — Discover</span>
+            <h3 class="step-card__title">Search, don't call</h3>
+            <p class="step-card__body">
+              Filter doctors by specialization, fee, or the next available
+              date — no phone tag with the front desk.
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="step-card">
+            <span class="step-card__index mono">02 — Book</span>
+            <h3 class="step-card__title">Pick an open slot</h3>
+            <p class="step-card__body">
+              Choose straight from the doctor's live grid. Once a slot is
+              taken, it's gone for everyone else, immediately.
+            </p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="step-card">
+            <span class="step-card__index mono">03 — Confirmed</span>
+            <h3 class="step-card__title">Get your appointment</h3>
+            <p class="step-card__body">
+              Receive an appointment ID instantly, with a record you can
+              revisit, track, or cancel anytime.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <svg class="pulse-divider pulse-svg pulse-svg--draw" data-pulse="divider" viewBox="0 0 1200 60" aria-hidden="true">
+    <path d="M0,30 L500,30 L525,10 L550,50 L575,30 L1200,30" />
+  </svg>
+
+  <!-- Specializations -->
+  <section class="specializations">
+    <div class="container-ms">
+      <span class="eyebrow">Browse by specialization</span>
+      <h2 class="display-l mb-4">Jump straight to the right care.</h2>
+      <div class="row g-3" data-specializations>
+        <!-- populated by landing.js from the data-access layer -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ms-footer">
+    <div class="container-ms">
+      <div class="ms-footer__grid">
+        <div>
+          <div class="ms-footer__brand">MediSlot</div>
+          <p class="text-slate" style="max-width: 40ch; font-size: var(--fs-small);">
+            A clinic appointment system built to make booking a slot as
+            precise as the care itself.
+          </p>
+        </div>
+        <ul class="ms-footer__links">
+          <li><a href="doctors.html">Find a Doctor</a></li>
+          <li><a href="login.html">Log in</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="mailto:hello@medislot.example">Contact</a></li>
+        </ul>
+      </div>
+      <p class="ms-footer__meta">MediSlot — a college project. Not for real medical use.</p>
+    </div>
+  </footer>
+
+  <script src="../static/js/mock-data.js"></script>
+  <script src="../static/js/data-access.js"></script>
+  <script src="../static/js/landing.js"></script>
+</body>
+</html>
