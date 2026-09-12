@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  /* -- Color system -------------------------------------------------- */
+  --color-forest-950: #0a2620;
+  --color-forest-900: #0f3d34;
+  --color-forest-800: #155448;
+  --color-forest-700: #1d6c5b;
+  --color-forest-600: #278574;
+  --color-forest-100: #dcece6;
+  --color-forest-50: #eff6f2;
+
+  --color-sage-50: #f5f8f3;
+  --color-sage-100: #eaf1e6;
+
+  --color-cream: #fbf8f2;
+
+  --color-amber-600: #d9861f;
+  --color-amber-500: #f2a63c;
+  --color-amber-100: #fbe7c6;
+
+  --color-coral-500: #ee7d5f;
+  --color-coral-100: #fbdcd2;
+
+  --color-sky-500: #5c93c9;
+  --color-sky-100: #dbe9f6;
+
+  --color-ink-900: #142520;
+  --color-ink-700: #3a4c46;
+  --color-ink-500: #6b7d76;
+
+  /* -- Type -------------------------------------------------------- */
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-sage-50 text-ink-900 antialiased;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background-color: var(--color-amber-500);
+    color: var(--color-forest-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-amber-500);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .balance {
+    text-wrap: balance;
+  }
+}
