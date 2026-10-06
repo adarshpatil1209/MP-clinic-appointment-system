@@ -1,0 +1,152 @@
+/* MediSlot v2 theme layer: loaded after app.css. Fonts, shapes, dark theme, glass, tickets, motion. */
+:root{
+  --font-display:'Bricolage Grotesque','Segoe UI',sans-serif;
+  --font-body:'Figtree',system-ui,sans-serif;
+  --font-mono:'Geist Mono',ui-monospace,monospace;
+  --radius:24px; --radius-sm:16px; --radius-xs:8px; --pill:999px;
+  --surface:var(--white); --on-signal:#fff; --signal-text:var(--signal); --signal-glow:#5EE0B0;
+  --glass:color-mix(in srgb,var(--paper) 70%,transparent);
+  --glow:rgba(31,122,92,.16); --monitor:#0E1F18; --monitor-ink:#DDEBE3; --monitor-line:#1F3A2E;
+  --ease-spring:cubic-bezier(.16,1,.3,1);
+}
+[data-theme=dark]{
+  --ink:#E6F0EA; --paper:#0C1A15; --slate:#8CA399; --line:#22372E; --surface:#13261F; --white:#13261F;
+  --signal:#2A8F6C; --signal-dark:#237A5B; --signal-text:#4CC29A; --signal-tint:rgba(76,194,154,.12); --signal-mid:rgba(76,194,154,.25);
+  --ink-tint:rgba(230,240,234,.07); --glow:rgba(76,194,154,.18); --paper-glass:rgba(12,26,21,.7);
+  --shadow:0 2px 8px rgba(0,0,0,.35); --shadow-md:0 8px 24px rgba(0,0,0,.4); --shadow-lg:0 16px 48px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+body{font-optical-sizing:auto;background:var(--paper);color:var(--ink);transition:none}
+h1,h2,h3,.display,.brand,.stat-number{font-family:var(--font-display);font-optical-sizing:auto;font-stretch:88%;letter-spacing:-.025em;line-height:1.05}
+h1{font-size:clamp(2.4rem,6.5vw,4.5rem);font-weight:700}
+.time-mono,.fee-mono,.mono,.slot-btn,.day-btn .day-num{font-variant-numeric:tabular-nums;font-feature-settings:"zero"}
+a:not([class]),.muted a{color:var(--signal-text)}
+.cardx,.doctor-card,.summary-box{background:var(--surface);color:var(--ink);border-color:var(--line)}
+[data-theme=dark] .form-control,[data-theme=dark] .form-select{background:var(--surface);color:var(--ink);border-color:var(--line)}
+[data-theme=dark] .modal-content{background:var(--surface);color:var(--ink)}
+.btn-sig{color:var(--on-signal)}
+
+/* Shapes: squircle where supported, asymmetric radii, pill controls */
+@supports (corner-shape:squircle){.cardx,.doctor-card,.summary-box,.vitals-panel,.nav-bar .btn-out{corner-shape:squircle}}
+.doctor-card{border-radius:var(--radius) var(--radius) var(--radius) 6px}
+.cardx,.summary-box{border-radius:var(--radius)}
+.btn-sig,.btn-out,.btn-del,.chip-avail,.badge-status,.form-control,.form-select{border-radius:var(--pill)}
+.form-control,.form-select{padding-inline:1.1rem}
+.avatar{border-radius:38% 62% 55% 45%/50% 45% 55% 50%;background:radial-gradient(circle at 30% 25%,var(--signal-mid),var(--signal-tint));color:var(--signal-text)}
+.slot-btn{border-radius:var(--pill);min-height:44px}
+.slot-btn.open:hover{transform:translateY(-2px) scale(1.04)}
+.slot-btn.sel{box-shadow:0 0 0 4px var(--glow)}
+.day-btn{border-radius:22px;min-width:64px;min-height:84px}
+.day-btn.sel{box-shadow:0 8px 20px var(--glow)}
+
+/* Press feedback on pointer-down (Apple: respond before release) */
+.btn-sig:active,.btn-out:active,.btn-del:active,.slot-btn:active,.day-btn:active,.doctor-card:active,.cmdk-item:active{transform:scale(.97)!important;transition:transform 90ms ease-out}
+
+/* Glass nav + cursor glow + tilt */
+.nav-bar{background:var(--glass);backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6)}
+@supports not (backdrop-filter:blur(1px)){.nav-bar{background:var(--paper)}}
+[data-glow]{position:relative;isolation:isolate}
+[data-glow]::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;opacity:0;pointer-events:none;transition:opacity .25s;
+  background:radial-gradient(260px circle at var(--gx,50%) var(--gy,50%),var(--glow),transparent 70%)}
+[data-glow]:hover::before{opacity:1}
+.doctor-card,.doctor-card:hover{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));will-change:auto}
+.doctor-card{transition:box-shadow .2s,border-color .2s}
+.doctor-card:hover{box-shadow:var(--shadow-lg);border-color:var(--signal)}
+.btn-sig{will-change:translate}
+
+/* Ticket rows: perforated appointments */
+.ticket-row{position:relative;padding-inline:var(--space-5)!important;border-bottom:0!important}
+.ticket-row+.ticket-row{border-top:2px dashed var(--line)}
+@media (min-width:768px){
+  .ticket-row::after{content:"";position:absolute;right:210px;top:10px;bottom:10px;border-left:2px dashed var(--line)}
+  .ticket-row::before{content:"";position:absolute;right:201px;top:0;bottom:0;width:18px;background:radial-gradient(circle at 50% 0,var(--paper) 9px,transparent 10px) top/18px 9px no-repeat,radial-gradient(circle at 50% 100%,var(--paper) 9px,transparent 10px) bottom/18px 9px no-repeat}
+}
+.stat-number{font-variant-numeric:tabular-nums}
+
+/* Hero live monitor */
+.hero-section{position:relative}
+.hero-section::before{content:"";position:absolute;inset:-40px -20px;z-index:-1;opacity:.05;-webkit-mask-image:radial-gradient(closest-side,#000,transparent);mask-image:radial-gradient(closest-side,#000,transparent);pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.ecg-canvas{width:100%;height:120px;display:block;-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 92%,transparent)}
+.vitals-panel{border-radius:36px 36px 36px 8px;background:var(--monitor);color:var(--monitor-ink);border:1px solid var(--monitor-line);box-shadow:var(--shadow-lg)}
+.vitals-panel .panel-label{color:var(--monitor-ink)}
+
+/* Theme-toggle + command palette + tab bar */
+.icon-btn{width:44px;height:44px;border-radius:var(--pill);border:1px solid var(--line);background:transparent;color:var(--ink);display:inline-grid;place-items:center;cursor:pointer}
+.icon-btn:hover{border-color:var(--signal)}
+.icon-btn svg{width:20px;height:20px}
+.cmdk-back{position:fixed;inset:0;z-index:2000;background:rgba(8,16,12,.45);backdrop-filter:blur(6px);display:grid;place-items:start center;padding:12vh 16px 0}
+.cmdk{width:min(560px,100%);background:var(--surface);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow-lg);overflow:hidden;transform-origin:50% 0}
+.cmdk input{width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);padding:20px 24px;font-size:1.1rem;outline:none}
+.cmdk ul{list-style:none;margin:0;padding:8px;max-height:50vh;overflow:auto}
+.cmdk-item{display:flex;justify-content:space-between;gap:12px;padding:12px 16px;border-radius:16px;cursor:pointer;min-height:44px;align-items:center}
+.cmdk-item.on{background:var(--signal-tint)}
+.cmdk-item small{color:var(--slate)}
+.tabbar{display:none}
+@media (max-width:767.98px){
+  main{padding-bottom:104px!important}
+  .tabbar{display:flex;position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:1100;padding:6px;border-radius:30px;
+    background:var(--glass);backdrop-filter:blur(20px) saturate(1.7);-webkit-backdrop-filter:blur(20px) saturate(1.7);border:1px solid var(--line);box-shadow:var(--shadow-lg)}
+  .tabbar a{position:relative;z-index:1;flex:1;text-align:center;padding:12px 4px;min-height:48px;border-radius:24px;color:var(--slate);text-decoration:none;font-weight:600;font-size:.82rem}
+  .tabbar a.active{color:var(--on-signal)}
+  .tabbar-ind{position:absolute;top:6px;bottom:6px;left:0;width:0;border-radius:24px;background:var(--signal)}
+}
+
+/* Page + theme transitions (View Transitions API, graceful fallback) */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:vt-out .22s ease both}
+::view-transition-new(root){animation:vt-in .35s var(--ease-spring) both}
+@keyframes vt-out{to{opacity:0}}@keyframes vt-in{from{opacity:0;transform:translateY(8px)}}
+html.vt-theme::view-transition-old(root),html.vt-theme::view-transition-new(root){animation:none;mix-blend-mode:normal}
+html.vt-theme::view-transition-old(root){z-index:1}html.vt-theme::view-transition-new(root){z-index:2}
+::view-transition-group(*){animation-duration:.45s;animation-timing-function:var(--ease-spring)}
+@media (prefers-reduced-motion:reduce){
+  @view-transition{navigation:none}
+  .doctor-card,.doctor-card:hover{transform:none}
+  [data-glow]::before{transition:none}
+}
+
+::placeholder{color:var(--slate);opacity:.85}
+@media (max-width:767.98px){
+  .booking-sheet{bottom:calc(84px + env(safe-area-inset-bottom));left:12px;right:12px;border-radius:24px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(18px)}
+}
+
+/* Landing bento + draggable chips + scroll reveal */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--space-4)}
+.tile{grid-column:span 3;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius) var(--radius) var(--radius) 6px;padding:var(--space-5)}
+.tile:nth-child(2){border-radius:var(--radius) var(--radius) 6px var(--radius)}
+.tile-wide{grid-column:span 6;border-radius:var(--radius)}
+.tile-step{color:var(--signal-text);text-transform:uppercase;letter-spacing:.1em;font-size:.75rem;margin-bottom:var(--space-2)}
+.mini-list{list-style:none;padding:0;margin:0;display:grid;gap:6px;min-height:96px}
+.mini-list li{padding:10px 16px;border-radius:var(--pill);background:var(--signal-tint);font-size:.9rem}
+.mini-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media (max-width:767.98px){.tile,.tile-wide{grid-column:span 6}}
+.chip-strip{display:flex;flex-wrap:nowrap!important;overflow-x:auto;gap:var(--space-2);scrollbar-width:none;cursor:grab;padding-bottom:6px}
+.chip-strip::-webkit-scrollbar{display:none}.chip-strip .spec-chip{flex-shrink:0;border-radius:var(--pill)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease-spring),transform .6s var(--ease-spring)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+.ticket-row{touch-action:pan-y;will-change:auto}
+.swipe-hint{position:absolute;right:16px;top:50%;translate:0 -50%;color:var(--pulse);font-weight:600;opacity:0;pointer-events:none}
+
+/* Booking sheet (mobile): two detents, drag handle */
+@media (max-width:767.98px){
+  .booking-sheet{display:block;position:fixed;bottom:calc(84px + env(safe-area-inset-bottom));left:12px;right:12px;margin:0;z-index:1050;padding:0 16px;
+    border-radius:28px 28px 8px 8px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-lg);backdrop-filter:none;will-change:transform}
+  .sheet-grip{height:28px;display:grid;place-items:center;touch-action:none;cursor:grab}
+  .sheet-grip::before{content:"";width:40px;height:5px;border-radius:9px;background:var(--line)}
+  .sheet-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:14px}
+  .sheet-more{height:132px;display:grid;gap:6px;align-content:start;margin:0;padding-top:6px;border-top:1px dashed var(--line)}
+}
+@media (min-width:768px){.booking-sheet{display:none}}
+
+/* Availability week grid */
+.week-grid{--px:36px;display:grid;grid-template-columns:44px repeat(7,minmax(0,1fr));gap:4px;overflow-x:auto;min-width:0}
+.wg-hours{position:relative;margin-top:28px;height:calc(16 * var(--px));}
+.wg-col{min-width:56px}.wg-head{height:28px;text-align:center;font-weight:600;color:var(--slate)}
+.wg-body{position:relative;height:calc(16 * var(--px));border-radius:14px;background:repeating-linear-gradient(to bottom,transparent 0 calc(var(--px) - 1px),var(--line) calc(var(--px) - 1px) var(--px));border:1px solid var(--line)}
+.wg-block{position:absolute;left:3px;right:3px;border:0;border-radius:12px;background:var(--signal);color:var(--on-signal);font-family:var(--font-mono);font-size:.7rem;padding:4px 6px;text-align:left;cursor:grab;touch-action:none;box-shadow:var(--shadow);overflow:hidden}
+.wg-block.drag{cursor:grabbing;box-shadow:var(--shadow-lg);z-index:2}
+.wg-handle{position:absolute;left:0;right:0;bottom:0;height:12px;cursor:ns-resize}
+.wg-handle::after{content:"";position:absolute;left:35%;right:35%;bottom:3px;height:3px;border-radius:3px;background:currentColor;opacity:.6}
+.wg-tick{position:absolute;left:0;font-family:var(--font-mono);font-size:.65rem;color:var(--slate)}

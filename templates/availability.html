@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Availability — MediSlot{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-lg-8">
+    <h1 class="mb-2">Availability</h1>
+    <p class="muted">Weekly rules generate bookable slots. Overlapping windows on the same weekday are rejected.</p>
+  </div>
+</div>
+
+<div class="cardx mb-4 week-card">
+  <div class="d-flex justify-content-between align-items-baseline flex-wrap gap-2 mb-3">
+    <h2 class="fs-5 mb-0">Week at a glance</h2>
+    <span class="muted small">Drag a block to move it, drag its bottom edge to resize. Or use the form below.</span>
+  </div>
+  <div class="week-grid" data-week-grid>
+    <div class="wg-hours" aria-hidden="true"></div>
+    <div class="wg-col" data-wd="0"><div class="wg-head">Mon</div><div class="wg-body"></div></div><div class="wg-col" data-wd="1"><div class="wg-head">Tue</div><div class="wg-body"></div></div><div class="wg-col" data-wd="2"><div class="wg-head">Wed</div><div class="wg-body"></div></div><div class="wg-col" data-wd="3"><div class="wg-head">Thu</div><div class="wg-body"></div></div><div class="wg-col" data-wd="4"><div class="wg-head">Fri</div><div class="wg-body"></div></div><div class="wg-col" data-wd="5"><div class="wg-head">Sat</div><div class="wg-body"></div></div><div class="wg-col" data-wd="6"><div class="wg-head">Sun</div><div class="wg-body"></div></div>
+    <div hidden data-src>
+      {% for r in rules %}<button type="button" class="wg-block" data-id="{{ r.id }}" data-wd="{{ r.weekday }}" data-start="{{ r.start_time|time:'H:i' }}" data-end="{{ r.end_time|time:'H:i' }}" data-slot="{{ r.slot_minutes }}" aria-label="{{ r.get_weekday_display }} {{ r.start_time|time:'H:i' }} to {{ r.end_time|time:'H:i' }}"><span class="wg-label"></span><span class="wg-handle" aria-hidden="true"></span></button>{% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="row g-5">
+  <div class="col-lg-7">
+    <div class="cardx p-0 overflow-hidden">
+      <div class="px-4 py-3" style="border-bottom:1px solid var(--line)"><h2 class="mb-0 fs-5">Active rules</h2></div>
+      <div class="p-4">
+        {% if rules %}
+          {% for r in rules %}
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 py-3" style="border-bottom:1px solid var(--line)">
+            <div>
+              <div class="fw-medium">{{ r.get_weekday_display }}</div>
+              <div class="time-mono muted">{{ r.start_time|time:"H:i" }}–{{ r.end_time|time:"H:i" }} · {{ r.slot_minutes }} min</div>
+            </div>
+            <div class="d-flex gap-2">
+              <a class="btn-out btn-sm" href="{% url 'availability' %}?edit={{ r.id }}">Edit</a>
+              <form method="post" class="m-0">
+                {% csrf_token %}
+                <input type="hidden" name="delete" value="{{ r.id }}">
+                <button type="submit" class="btn-del btn-sm">Remove</button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p class="muted mb-0">No rules yet. Patients cannot book until you add hours.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="cardx">
+      <h2 class="fs-5 mb-4">{% if edit_rule %}Edit rule{% else %}Add rule{% endif %}</h2>
+      <form method="post" data-validate>
+        {% csrf_token %}
+        {% include "_field.html" with field=form.weekday %}
+        <div class="row g-2">
+          <div class="col-6">{% include "_field.html" with field=form.start_time %}</div>
+          <div class="col-6">{% include "_field.html" with field=form.end_time %}</div>
+        </div>
+        {% include "_field.html" with field=form.slot_minutes %}
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger mb-3" role="alert">{{ form.non_field_errors.0 }}</div>
+        {% endif %}
+        <button type="submit" class="btn-sig w-100 justify-content-center">{% if edit_rule %}Save changes{% else %}Add rule{% endif %}</button>
+        {% if edit_rule %}
+          <a class="btn-out w-100 justify-content-center mt-2" href="{% url 'availability' %}">Cancel edit</a>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

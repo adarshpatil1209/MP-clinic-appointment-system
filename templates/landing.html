@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}MediSlot — Book Your Clinic Appointment{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+  <div class="row g-5 align-items-center">
+    <div class="col-lg-6">
+      <p class="mono mb-2" style="color:var(--signal);letter-spacing:.1em;font-size:.8rem;text-transform:uppercase">
+        <span class="vitals-tick">●</span> Live slot booking
+      </p>
+      <h1>Book the exact time you need.</h1>
+      <p class="hero-tagline">
+        Pick a doctor, see real open slots, and confirm in seconds.
+        Row-locked bookings mean zero double-scheduling.
+      </p>
+      <div class="d-flex flex-wrap gap-3 align-items-center">
+        {% if user.is_authenticated %}
+          <a class="btn-sig" href="{% url 'home' %}">Go to my home</a>
+        {% else %}
+          <a class="btn-sig" href="{% url 'login' %}?next={% url 'doctors' %}&amp;reason=find">Find a doctor</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="vitals-panel" aria-label="Mock clinic monitor">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <div class="panel-label">Next available</div>
+            <div class="panel-value">Tue 10:30</div>
+          </div>
+          <div class="text-end">
+            <div class="panel-label">Local time</div>
+            <div class="panel-value" id="hero-time">--:--</div>
+          </div>
+        </div>
+        <canvas class="ecg-canvas" aria-hidden="true"></canvas>
+        <div class="d-flex gap-4 mt-3" style="border-top:1px solid var(--signal-mid);padding-top:12px">
+          <div><div class="panel-label">Status</div><div>OPEN <span class="vitals-tick">●</span></div></div>
+          <div><div class="panel-label">Doctors</div><div>{{ doctor_count }}</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="my-5 py-3" aria-labelledby="how-it-works">
+  {% include "_pulse.html" %}
+  <h2 id="how-it-works" class="text-center mb-5 mt-4">How it works</h2>
+  <div class="bento">
+    <article class="tile reveal" data-glow x-data="{q:'',all:['Dr. Meera Iyer · Cardiology','Dr. Arjun Kulkarni · Dermatology','Dr. Sana Sheikh · Pediatrics','Dr. Nisha Patil · Orthopedics']}">
+      <p class="tile-step mono">01 · Discover</p>
+      <h3>Find your doctor in seconds</h3>
+      <input class="form-control my-3" x-model="q" placeholder="Try typing “sana”" aria-label="Demo doctor search">
+      <ul class="mini-list"><template x-for="d in all.filter(x=>x.toLowerCase().includes(q.toLowerCase())).slice(0,3)" :key="d"><li x-text="d"></li></template></ul>
+    </article>
+    <article class="tile reveal" data-glow x-data="{sel:null,slots:['10:00','10:30','11:00','11:30','15:00','15:30']}">
+      <p class="tile-step mono">02 · Book</p>
+      <h3>Tap a time. It's yours.</h3>
+      <div class="mini-slots my-3"><template x-for="t in slots" :key="t"><button type="button" class="slot-btn open" :class="{sel:sel===t}" @click="sel=t" x-text="t"></button></template></div>
+      <p class="mono mb-0" x-text="sel ? 'Locked in for '+sel : 'Pick a slot to try it'" aria-live="polite"></p>
+    </article>
+    <article class="tile tile-wide reveal" data-glow x-data="{s:172800,st:'pending',init(){setInterval(()=>this.s--,1000);setTimeout(()=>this.st='confirmed',2500)},get t(){const d=Math.floor(this.s/86400),h=Math.floor(this.s%86400/3600),m=Math.floor(this.s%3600/60),x=this.s%60;return d+'d '+h+'h '+String(m).padStart(2,'0')+'m '+String(x).padStart(2,'0')+'s'}}">
+      <p class="tile-step mono">03 · Confirmed</p>
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div><h3 class="mb-1">Track it. Cancel up to 2h before.</h3><p class="muted mb-0">Status updates and email confirmations, no calls.</p></div>
+        <div class="text-end"><div class="mono fs-5" x-text="'in '+t"></div><span class="badge-status" :class="st=='pending'?'s-pending':'s-confirmed'" x-text="st=='pending'?'Pending':'Confirmed'"></span></div>
+      </div>
+    </article>
+  </div>
+  </section>
+
+{% if specs %}
+<section class="my-5 py-3" aria-labelledby="browse-specs">
+  <h2 id="browse-specs" class="mb-4">Browse by specialization</h2>
+  <div class="spec-grid chip-strip" data-drag>
+    {% for s in specs %}
+      {% if user.is_authenticated and user.role == 'patient' %}
+        <a class="spec-chip" href="{% url 'doctors' %}?spec={{ s|urlencode }}">{{ s }}</a>
+      {% else %}
+        <a class="spec-chip" href="{% url 'login' %}?next=/doctors/?spec={{ s|urlencode }}&amp;reason=find">{{ s }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="my-5 py-3" id="contact" aria-labelledby="contact-heading">
+  <h2 id="contact-heading">Contact</h2>
+  <p class="muted mb-0">Questions about this college demo? Write to <span class="mono">clinic@medislot.local</span> — no real patients are contacted.</p>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/landing.js' %}" defer></script>
+{% endblock %}

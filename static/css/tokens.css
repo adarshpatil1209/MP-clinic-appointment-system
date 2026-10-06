@@ -1,0 +1,55 @@
+/* ─── MediSlot Design Tokens ────────────────────────────────────────────────
+   All colors, fonts, spacing live here. Never use raw hex values anywhere else.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  --ink:          #10231C;
+  --paper:        #F3F6F3;
+  --slate:        #5B6E66;
+  --line:         #D9E0DA;
+  --signal:       #1F7A5C;
+  --pulse:        #E4483B;
+  --amber:        #E8A33D;
+  --white:        #fff;
+
+  --signal-dark:  #186A4E;
+  --signal-tint:  rgba(31, 122, 92, .10);
+  --signal-mid:   rgba(31, 122, 92, .20);
+  --pulse-tint:   rgba(228, 72, 59, .10);
+  --amber-tint:   rgba(232, 163, 61, .18);
+  --amber-ink:    #8A5A00;
+  --slate-tint:   rgba(91, 110, 102, .12);
+  --ink-tint:     rgba(16, 35, 28, .06);
+  --paper-glass:  rgba(243, 246, 243, .92);
+  --success-ink:  #155237;
+  --danger-ink:   #8B1C14;
+  --footer-muted: rgba(243, 246, 243, .6);
+  --footer-faint: rgba(243, 246, 243, .4);
+
+  --font-display: 'Fraunces', serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  --radius:    12px;
+  --radius-sm: 8px;
+  --radius-xs: 4px;
+
+  --shadow:     0 2px 8px rgba(16, 35, 28, .06);
+  --shadow-md:  0 4px 20px rgba(16, 35, 28, .10);
+  --shadow-lg:  0 12px 40px rgba(16, 35, 28, .14);
+
+  --max: 1200px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 120ms;
+  --dur-med:  200ms;
+  --dur-slow: 400ms;
+}

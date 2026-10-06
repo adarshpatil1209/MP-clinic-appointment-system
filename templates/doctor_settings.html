@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Settings — MediSlot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="cardx mt-3">
+      <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-light-subtle">
+        <div class="d-flex gap-3 align-items-center">
+          <div class="avatar avatar-lg">{{ user.initials }}</div>
+          <div>
+            <h2 class="mb-0 fs-4">Dr. {{ user.display_name }}</h2>
+            <div class="text-muted" style="font-size:.875rem">Doctor Profile Settings</div>
+          </div>
+        </div>
+        <div>
+          {% if request.user.doctorprofile.approved %}
+            <span class="badge-status s-completed"><i class="bi bi-patch-check-fill me-1"></i>Approved</span>
+          {% else %}
+            <span class="badge-status s-pending"><i class="bi bi-hourglass-split me-1"></i>Pending Approval</span>
+          {% endif %}
+        </div>
+      </div>
+      
+      <form method="post">
+        {% csrf_token %}
+        
+        <h3 class="fs-5 mb-3">Professional Details</h3>
+        
+        <div class="mb-4">
+          <label class="form-label" for="{{ profile_form.specialization.id_for_label }}">{{ profile_form.specialization.label }}</label>
+          {{ profile_form.specialization }}
+          {% if profile_form.specialization.errors %}<div class="form-error">{{ profile_form.specialization.errors.0 }}</div>{% endif %}
+        </div>
+        
+        <div class="row g-3 mb-4 pb-4 border-bottom border-light-subtle">
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ profile_form.experience_years.id_for_label }}">{{ profile_form.experience_years.label }} (Years)</label>
+            {{ profile_form.experience_years }}
+            {% if profile_form.experience_years.errors %}<div class="form-error">{{ profile_form.experience_years.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ profile_form.fee.id_for_label }}">{{ profile_form.fee.label }} (₹)</label>
+            {{ profile_form.fee }}
+            {% if profile_form.fee.errors %}<div class="form-error">{{ profile_form.fee.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+        
+        <div class="mb-4 pb-4 border-bottom border-light-subtle">
+          <label class="form-label" for="{{ profile_form.bio.id_for_label }}">{{ profile_form.bio.label }}</label>
+          {{ profile_form.bio }}
+          {% if profile_form.bio.help_text %}<div class="form-help">{{ profile_form.bio.help_text }}</div>{% endif %}
+          {% if profile_form.bio.errors %}<div class="form-error">{{ profile_form.bio.errors.0 }}</div>{% endif %}
+        </div>
+        
+        <div class="mb-4 pb-4 border-bottom border-light-subtle">
+          <label class="form-label" for="{{ profile_form.avatar_initials.id_for_label }}">{{ profile_form.avatar_initials.label }}</label>
+          {{ profile_form.avatar_initials }}
+          {% if profile_form.avatar_initials.help_text %}<div class="form-help">{{ profile_form.avatar_initials.help_text }}</div>{% endif %}
+          {% if profile_form.avatar_initials.errors %}<div class="form-error">{{ profile_form.avatar_initials.errors.0 }}</div>{% endif %}
+        </div>
+        
+        <h3 class="fs-5 mb-3">Personal Details</h3>
+        <div class="row g-3 mb-3">
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ user_form.first_name.id_for_label }}">First Name</label>
+            {{ user_form.first_name }}
+            {% if user_form.first_name.errors %}<div class="form-error">{{ user_form.first_name.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ user_form.last_name.id_for_label }}">Last Name</label>
+            {{ user_form.last_name }}
+            {% if user_form.last_name.errors %}<div class="form-error">{{ user_form.last_name.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label" for="{{ user_form.email.id_for_label }}">Email Address</label>
+          {{ user_form.email }}
+          {% if user_form.email.errors %}<div class="form-error">{{ user_form.email.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="mb-4">
+          <label class="form-label" for="{{ user_form.phone.id_for_label }}">Phone Number</label>
+          {{ user_form.phone }}
+          {% if user_form.phone.errors %}<div class="form-error">{{ user_form.phone.errors.0 }}</div>{% endif %}
+        </div>
+        
+        <div class="d-flex justify-content-end gap-2">
+          <a href="{% url 'dashboard' %}" class="btn-out">Cancel</a>
+          <button type="submit" class="btn-sig" name="save_profile">Save Changes</button>
+        </div>
+      </form>
+      
+      <hr class="my-4">
+      
+      <h3 class="fs-5 mb-3">Change Password</h3>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label" for="{{ pw_form.old_password.id_for_label }}">{{ pw_form.old_password.label }}</label>
+          {{ pw_form.old_password }}
+          {% if pw_form.old_password.errors %}<div class="form-error">{{ pw_form.old_password.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="{{ pw_form.new_password1.id_for_label }}">{{ pw_form.new_password1.label }}</label>
+          {{ pw_form.new_password1 }}
+          {% if pw_form.new_password1.errors %}<div class="form-error">{{ pw_form.new_password1.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="{{ pw_form.new_password2.id_for_label }}">{{ pw_form.new_password2.label }}</label>
+          {{ pw_form.new_password2 }}
+          {% if pw_form.new_password2.errors %}<div class="form-error">{{ pw_form.new_password2.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+          <a href="{% url 'dashboard' %}" class="btn-out">Cancel</a>
+          <button type="submit" class="btn-sig" name="change_password">Change Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

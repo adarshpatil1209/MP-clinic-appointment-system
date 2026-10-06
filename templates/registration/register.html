@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Register — MediSlot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="cardx mt-3">
+      <h2 class="text-center mb-2">Create Account</h2>
+      <p class="text-center text-muted mb-4" style="font-size: .875rem;">Join MediSlot to book or manage appointments.</p>
+      
+      <form method="post">
+        {% csrf_token %}
+        
+        {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+              <div class="form-help">{{ field.help_text }}</div>
+            {% endif %}
+            {% if field.errors %}
+              <div class="form-error">{{ field.errors.0 }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+        
+        <button type="submit" class="btn-sig w-100 justify-content-center mt-3">Register</button>
+        
+        <div class="text-center mt-4">
+          <span class="text-muted" style="font-size: .875rem;">Already have an account?</span> 
+          <a href="{% url 'login' %}" class="fw-medium ms-1" style="font-size: .875rem;">Log In</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

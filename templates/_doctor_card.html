@@ -1,0 +1,26 @@
+<a class="doctor-card h-100 d-flex flex-column" href="{% url 'doctor_profile' doc.id %}">
+  <div class="d-flex gap-3 align-items-start mb-3">
+    <div class="avatar avatar-lg" style="view-transition-name:doc-{{ doc.id }}" aria-hidden="true">{{ doc.user.initials }}</div>
+    <div>
+      <h3 class="mb-0 doc-name">Dr. {{ doc.user.display_name }}</h3>
+      <div class="text-uppercase" style="font-size:.75rem;letter-spacing:.05em;color:var(--slate)">{{ doc.specialization }}</div>
+      <div class="mt-1 muted" style="font-size:.875rem">{{ doc.experience_years }} yrs experience</div>
+    </div>
+  </div>
+  <div class="mt-auto pt-3" style="border-top:1px solid var(--line)">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <div class="muted" style="font-size:.75rem">FEE</div>
+        <div class="fee-mono fw-bold">₹{{ doc.fee|floatformat:0 }}</div>
+      </div>
+      <div class="text-end">
+        <div class="muted" style="font-size:.75rem">NEXT AVAILABLE</div>
+        {% if doc.next_available %}
+          <span class="chip-avail time-mono">{{ doc.next_available|date:"d M, H:i" }}</span>
+        {% else %}
+          <span class="chip-avail chip-none">No slots</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</a>

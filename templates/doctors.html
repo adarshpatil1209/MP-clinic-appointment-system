@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Find a Doctor — MediSlot{% endblock %}
+
+{% block content %}
+<div class="row align-items-end mb-4 g-3">
+  <div class="col-lg-5">
+    <h1 class="mb-2">Find a doctor</h1>
+    <p class="muted mb-0">Approved specialists with real open slots.</p>
+  </div>
+  <div class="col-lg-7">
+    <form method="get" class="d-flex gap-2 flex-wrap" data-live-filter>
+      <div class="flex-grow-1" style="min-width:160px">
+        <label class="visually-hidden" for="q">Search name</label>
+        <input id="q" type="search" name="q" class="form-control" value="{{ q }}" placeholder="Search name…">
+      </div>
+      <div>
+        <label class="visually-hidden" for="spec">Specialization</label>
+        <select id="spec" class="form-select" name="spec">
+          <option value="">Any specialization</option>
+          {% for s in specs %}
+            <option value="{{ s }}" {% if s == spec_filter %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="visually-hidden" for="date">Available date</label>
+        <input id="date" type="date" name="date" class="form-control" value="{{ date_filter }}">
+      </div>
+      <div>
+        <label class="visually-hidden" for="sort">Sort</label>
+        <select id="sort" class="form-select" name="sort">
+          <option value="" {% if not sort %}selected{% endif %}>Soonest available</option>
+          <option value="fee" {% if sort == 'fee' %}selected{% endif %}>Lowest fee</option>
+          <option value="experience" {% if sort == 'experience' %}selected{% endif %}>Most experienced</option>
+        </select>
+      </div>
+      <button class="btn-sig btn-sm" type="submit">Apply</button>
+    </form>
+  </div>
+</div>
+
+<div id="doctor-results" aria-live="polite">
+{% if not doctors %}
+  <div class="text-center py-5 cardx">
+    <h3>No doctors found</h3>
+    <p class="muted">Try another date, specialization, or search term.</p>
+    <a class="btn-out mt-2" href="{% url 'doctors' %}">Clear filters</a>
+  </div>
+{% else %}
+  <div class="row g-4">
+    {% for doc in doctors %}
+      <div class="col-md-6 col-lg-4">{% include "_doctor_card.html" %}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+</div>
+{% endblock %}

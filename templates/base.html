@@ -1,0 +1,156 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}MediSlot{% endblock %} — Clinic Appointment System</title>
+  <meta name="description" content="{% block meta_description %}Book clinic appointments instantly. No double bookings, no phone calls.{% endblock %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Figtree:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{% static 'css/tokens.css' %}" rel="stylesheet">
+  <link href="{% static 'css/app.css' %}" rel="stylesheet">
+  <link href="{% static 'css/theme.css' %}" rel="stylesheet">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('ms-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')}catch(e){}</script>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+<a class="visually-hidden-focusable position-absolute m-2 p-2 bg-white" href="#main-content">Skip to content</a>
+<nav class="nav-bar" aria-label="Primary">
+  <div class="container d-flex align-items-center justify-content-between py-2 gap-3">
+    <a class="brand" href="{% url 'landing' %}">
+      MediSlot
+      <svg viewBox="0 0 44 20" aria-hidden="true" focusable="false">
+        <path d="M0 10H14L18 2L24 18L28 10H44" fill="none" stroke="var(--signal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <div class="d-none d-md-flex align-items-center gap-2">
+      <button class="icon-btn" type="button" onclick="document.dispatchEvent(new Event('open-palette'))" aria-label="Search (Ctrl+K)" title="Search (Ctrl+K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle dark mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg></button>
+      {% if user.is_authenticated %}
+        {% if user.role == 'doctor' %}
+          <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">Queue</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'availability' %}active{% endif %}" href="{% url 'availability' %}">Availability</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'doctor_settings' %}active{% endif %}" href="{% url 'doctor_settings' %}">Settings</a>
+        {% else %}
+          <a class="nav-link {% if request.resolver_match.url_name == 'doctors' %}active{% endif %}" href="{% url 'doctors' %}">Find a doctor</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'appointments' %}active{% endif %}" href="{% url 'appointments' %}">My appointments</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'patient_profile' %}active{% endif %}" href="{% url 'patient_profile' %}">Profile</a>
+        {% endif %}
+        <span class="nav-user">{{ user.display_name }} <span class="opacity-50">({{ user.role }})</span></span>
+        <form method="post" action="{% url 'logout' %}" class="m-0">
+          {% csrf_token %}
+          <button class="btn-out btn-sm" type="submit">Log out</button>
+        </form>
+      {% else %}
+        <a class="nav-link" href="{% url 'login' %}">Log in</a>
+        <a class="btn-sig btn-sm" href="{% url 'register' %}">Register</a>
+      {% endif %}
+    </div>
+    <button class="navbar-toggler d-md-none border-0 p-2" type="button"
+            data-bs-toggle="collapse" data-bs-target="#mobile-nav"
+            aria-controls="mobile-nav" aria-expanded="false" aria-label="Toggle navigation"
+            style="min-width:44px;min-height:44px">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+  <div class="collapse" id="mobile-nav">
+    <div class="container pb-3 d-flex flex-column gap-1">
+      {% if user.is_authenticated %}
+        {% if user.role == 'doctor' %}
+          <a class="nav-link" href="{% url 'dashboard' %}">Queue</a>
+          <a class="nav-link" href="{% url 'availability' %}">Availability</a>
+          <a class="nav-link" href="{% url 'doctor_settings' %}">Settings</a>
+        {% else %}
+          <a class="nav-link" href="{% url 'doctors' %}">Find a doctor</a>
+          <a class="nav-link" href="{% url 'appointments' %}">My appointments</a>
+          <a class="nav-link" href="{% url 'patient_profile' %}">Profile</a>
+        {% endif %}
+        <span class="small muted px-3">{{ user.display_name }} · {{ user.role }}</span>
+        <form method="post" action="{% url 'logout' %}" class="m-0">
+          {% csrf_token %}
+          <button class="btn-del btn-sm w-100" type="submit">Log out</button>
+        </form>
+      {% else %}
+        <a class="nav-link" href="{% url 'login' %}">Log in</a>
+        <a class="btn-sig btn-sm" href="{% url 'register' %}">Register</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+{% if user.is_authenticated %}
+<div x-data="palette([{% if user.role == 'doctor' %}{name:'Queue',hint:'page',url:'{% url 'dashboard' %}'},{name:'Availability',hint:'page',url:'{% url 'availability' %}'},{name:'Settings',hint:'page',url:'{% url 'doctor_settings' %}'}{% else %}{name:'Find a doctor',hint:'page',url:'{% url 'doctors' %}'},{name:'My appointments',hint:'page',url:'{% url 'appointments' %}'},{name:'Profile',hint:'page',url:'{% url 'patient_profile' %}'}{% endif %}], {% if user.role == 'patient' %}true{% else %}false{% endif %})" @open-palette.document="toggle()" @keydown.window.ctrl.k.prevent="toggle()" @keydown.window.meta.k.prevent="toggle()" @keydown.escape.window="open && toggle()">
+  <div class="cmdk-back" x-show="open" x-cloak style="display:none" @click.self="toggle()">
+    <div class="cmdk" x-ref="box" role="dialog" aria-modal="true" aria-label="Search">
+      <input x-ref="q" x-model="q" @input.debounce.150ms="search()" placeholder="Search doctors and pages" aria-label="Search" autocomplete="off"
+        @keydown.arrow-down.prevent="i=Math.min(i+1,items.length-1)" @keydown.arrow-up.prevent="i=Math.max(i-1,0)" @keydown.enter.prevent="go()" @keydown.tab.prevent>
+      <ul role="listbox"><template x-for="(it,n) in items" :key="it.url"><li class="cmdk-item" :class="{on:n===i}" role="option" :aria-selected="n===i" @pointerdown="location.href=it.url" @mousemove="i=n"><span x-text="it.name"></span><small x-text="it.hint"></small></li></template>
+      <li class="cmdk-item" x-show="!items.length"><small>Nothing found. Try a doctor's name or a specialization.</small></li></ul>
+    </div></div></div>
+<nav class="tabbar" aria-label="Quick navigation"><span class="tabbar-ind" aria-hidden="true"></span>
+  {% if user.role == 'doctor' %}
+  <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Queue</a>
+  <a href="{% url 'availability' %}" class="{% if request.resolver_match.url_name == 'availability' %}active{% endif %}">Hours</a>
+  <a href="{% url 'doctor_settings' %}" class="{% if request.resolver_match.url_name == 'doctor_settings' %}active{% endif %}">Me</a>
+  {% else %}
+  <a href="{% url 'doctors' %}" class="{% if request.resolver_match.url_name == 'doctors' or request.resolver_match.url_name == 'doctor_profile' %}active{% endif %}">Doctors</a>
+  <a href="{% url 'appointments' %}" class="{% if request.resolver_match.url_name == 'appointments' or request.resolver_match.url_name == 'appointment_detail' %}active{% endif %}">Visits</a>
+  <a href="{% url 'patient_profile' %}" class="{% if request.resolver_match.url_name == 'patient_profile' %}active{% endif %}">Me</a>
+  {% endif %}</nav>
+{% endif %}
+<div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
+{% if messages %}
+<div id="django-messages" hidden>
+  {% for m in messages %}
+    <div data-msg="{{ m.message }}" data-type="{% if 'error' in m.tags %}err{% else %}ok{% endif %}"></div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<main id="main-content" class="py-5" tabindex="-1">
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+{% block footer %}
+<footer class="site-footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="footer-brand mb-2">MediSlot
+          <svg viewBox="0 0 44 20" width="40" height="18" aria-hidden="true">
+            <path d="M0 10H14L18 2L24 18L28 10H44" fill="none" stroke="var(--signal)" stroke-width="2"/>
+          </svg>
+        </div>
+        <p class="small" style="color:var(--footer-muted)">Precision clinic appointments.<br>Built for the modern patient.</p>
+      </div>
+      <div class="col-md-4">
+        <h3>Links</h3>
+        <ul class="list-unstyled small d-grid gap-1">
+          <li><a href="{% url 'landing' %}#about">About</a></li>
+          <li><a href="{% url 'landing' %}#contact">Contact</a></li>
+          <li><a href="{% url 'login' %}">Login</a></li>
+          <li><a href="{% url 'register' %}">Register</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4" id="about">
+        <h3>About</h3>
+        <p class="small" style="color:var(--footer-muted)">MediSlot is project demonstrating real-time slot booking with Django and PostgreSQL. Appointments are locked the moment you confirm them.</p>
+      </div>
+    </div>
+    <hr style="border-color:var(--footer-faint);margin:var(--space-5) 0 var(--space-4)">
+    <p class="small mb-0 text-center" style="color:var(--footer-faint)">© 2026 MediSlot · College project · Bookings are simulated</p>
+  </div>
+</footer>
+{% endblock %}
+
+<script src="{% static 'js/motion.js' %}" defer></script>
+<script src="{% static 'js/app.js' %}" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

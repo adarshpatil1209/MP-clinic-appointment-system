@@ -1,0 +1,31 @@
+<div class="ticket-row d-flex justify-content-between align-items-center flex-wrap gap-3 py-3" style="border-bottom:1px solid var(--line)">
+  <div class="d-flex align-items-center gap-2">
+    <div class="avatar" style="width:36px;height:36px;font-size:.875rem" aria-hidden="true">{{ a.slot.doctor.user.initials }}</div>
+    <div>
+      <a class="fw-medium doc-name text-decoration-none" href="{% url 'appointment_detail' a.id %}">Dr. {{ a.slot.doctor.user.display_name }}</a>
+      <div class="muted" style="font-size:.8125rem">{{ a.slot.doctor.specialization }}</div>
+    </div>
+  </div>
+  <div>
+    <div class="fw-medium time-mono">{{ a.slot.start|date:"D, d M" }} · {{ a.slot.start|time:"H:i" }}</div>
+    {% if relative %}
+      <div class="muted" style="font-size:.75rem" data-rel-time="{{ a.slot.start|date:'c' }}"></div>
+    {% endif %}
+  </div>
+  {% include "_badge.html" with status=a.status label=a.get_status_display %}
+  <div>
+    {% if show_cancel %}
+      {% if a.can_cancel %}
+        <button type="button" class="btn-del btn-sm" data-cancel-open
+                data-id="{{ a.id }}"
+                data-label="Dr. {{ a.slot.doctor.user.display_name }} on {{ a.slot.start|date:'d M, H:i' }}">
+          Cancel
+        </button>
+      {% elif a.status == 'pending' or a.status == 'confirmed' %}
+        <span class="hint-disabled" title="Cancellations close {{ cancel_cutoff_hours }} hours before the appointment.">
+          Cancellation closed
+        </span>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>

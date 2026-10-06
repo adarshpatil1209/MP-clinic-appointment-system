@@ -1,0 +1,8 @@
+<div x-show="t=='{{ key }}'" class="d-grid gap-3">
+{% for a in items %}<div class="cardx d-flex justify-content-between align-items-center flex-wrap gap-3">
+ <div><h2 class="fs-5 mb-1">{{ a.slot.doctor }}</h2><div class="mono">{{ a.slot.start|date:"D d M Y" }} · {{ a.slot.start|time:"H:i" }}</div>
+ <details class="small muted mt-2"><summary>History</summary>{% for l in a.logs.all %}<div class="mono">{{ l.changed_at|date:"d M H:i" }} {{ l.old_status|default:"–" }} → {{ l.new_status }}</div>{% endfor %}</details></div>
+ <div class="d-flex align-items-center gap-3"><span class="badge-status s-{{ a.status }}">{{ a.get_status_display }}</span>
+ {% if a.can_cancel %}<form method="post" action="{% url 'cancel' a.id %}" onsubmit="return confirm('Cancel this appointment?')">{% csrf_token %}<button class="btn-del">Cancel</button></form>
+ {% elif a.status == 'pending' or a.status == 'confirmed' %}<span class="small muted">Cancellation closed</span>{% endif %}</div></div>
+{% empty %}<div class="cardx muted">{{ empty }} {% if key == 'upcoming' %}<a href="{% url 'doctors' %}">Find a doctor</a>{% endif %}</div>{% endfor %}</div>

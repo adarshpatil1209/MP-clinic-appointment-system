@@ -1,0 +1,632 @@
+/* ─── MediSlot App Styles ────────────────────────────────────────────────────
+   Built on tokens.css. No hardcoded hex values.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  --bs-body-bg: var(--paper);
+  --bs-body-color: var(--ink);
+  --bs-border-color: var(--line);
+}
+
+h1, h2, h3, h4, .display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -.015em;
+  line-height: 1.15;
+}
+h1 { font-size: clamp(1.75rem, 4vw, 2.25rem); }
+h2 { font-size: clamp(1.25rem, 3vw, 1.5rem); }
+h3 { font-size: 1.125rem; }
+
+.mono { font-family: var(--font-mono); font-weight: 500; letter-spacing: .01em; font-size: .9375rem; }
+.muted { color: var(--slate); }
+.container { max-width: var(--max); padding-inline: var(--space-5); }
+
+a { color: var(--signal); }
+a:hover { color: var(--signal); }
+
+/* Focus ring — 2 px Signal, visible everywhere */
+:focus-visible {
+  outline: 2px solid var(--signal) !important;
+  outline-offset: 2px;
+}
+
+/* ── Navigation ───────────────────────────────────────────────────────────── */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+}
+.brand:hover { color: var(--signal); }
+.brand svg { width: 44px; height: 20px; flex-shrink: 0; }
+
+.nav-link {
+  color: var(--slate);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-xs);
+  font-weight: 500;
+  transition: color var(--dur-fast), background var(--dur-fast);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.nav-link:hover, .nav-link.active { color: var(--ink); background: var(--ink-tint); }
+.nav-link.active { font-weight: 600; }
+
+.nav-user {
+  font-size: .875rem;
+  color: var(--slate);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+}
+
+/* ── Cards ────────────────────────────────────────────────────────────────── */
+.cardx {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  box-shadow: var(--shadow);
+}
+
+.cardx.lift { transition: transform var(--dur-med) var(--ease-out), box-shadow var(--dur-med) var(--ease-out); }
+.cardx.lift:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+/* Doctor card: subtle 3D tilt on hover */
+.doctor-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  box-shadow: var(--shadow);
+  transition: transform var(--dur-med) var(--ease-out),
+              box-shadow var(--dur-med) var(--ease-out),
+              border-color var(--dur-med);
+  will-change: transform;
+}
+.doctor-card:hover {
+  color: inherit;
+  border-color: var(--signal);
+  box-shadow: var(--shadow-md);
+  transform: perspective(600px) rotateX(2deg) rotateY(-2deg) translateY(-4px);
+}
+
+/* ── Avatars ──────────────────────────────────────────────────────────────── */
+.avatar {
+  width: 48px; height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--signal-tint);
+  color: var(--signal);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+  user-select: none;
+}
+.avatar-lg { width: 72px; height: 72px; font-size: 1.5rem; border-radius: var(--radius); }
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.btn-sig, .btn-out, .btn-del {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  padding: 10px 22px;
+  font-weight: 600;
+  font-size: .9375rem;
+  border: 1.5px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--dur-fast), color var(--dur-fast),
+              transform var(--dur-fast), box-shadow var(--dur-fast);
+  min-height: 44px;
+  white-space: nowrap;
+}
+.btn-sig { background: var(--signal); color: var(--white); }
+.btn-sig:hover:not(:disabled) { color: var(--white); background: var(--signal-dark); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.btn-sig:active { transform: translateY(0); }
+.btn-sig:disabled { background: var(--line); color: var(--slate); cursor: not-allowed; }
+
+/* Shimmer effect on hover */
+.btn-sig::after {
+  content: "";
+  position: absolute;
+  left: -60%;
+  top: 0; bottom: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+  transform: skewX(-20deg);
+}
+.btn-sig:hover:not(:disabled)::after { animation: shimmer .5s ease-out; }
+@keyframes shimmer { to { left: 130%; } }
+
+.btn-out { background: transparent; border-color: var(--ink); color: var(--ink); }
+.btn-out:hover { background: var(--ink-tint); color: var(--ink); }
+
+.btn-del { background: transparent; border-color: var(--pulse); color: var(--pulse); }
+.btn-del:hover { background: var(--pulse-tint); }
+
+.btn-sm { padding: 6px 14px; font-size: .875rem; min-height: 36px; }
+
+/* ── Badges ───────────────────────────────────────────────────────────────── */
+.badge-status {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.s-pending   { background: var(--amber-tint); color: var(--amber-ink); }
+.s-confirmed { background: var(--signal-tint); color: var(--signal); }
+.s-completed { background: var(--slate-tint); color: var(--slate); }
+.s-cancelled, .s-no_show { background: var(--pulse-tint); color: var(--pulse); }
+
+/* Next-available chip */
+.chip-avail {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--signal-tint);
+  color: var(--signal);
+  white-space: nowrap;
+}
+.chip-none { background: var(--slate-tint); color: var(--slate); }
+
+/* ── Form controls ────────────────────────────────────────────────────────── */
+.form-control, .form-select {
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  font-family: var(--font-body);
+  font-size: .9375rem;
+  padding: 10px 14px;
+  min-height: 44px;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--signal);
+  box-shadow: 0 0 0 3px var(--signal-tint);
+}
+.form-label { font-weight: 500; font-size: .875rem; color: var(--slate); margin-bottom: var(--space-1); display: block; }
+.form-error { color: var(--pulse); font-size: .8125rem; margin-top: var(--space-1); }
+.form-help  { color: var(--slate); font-size: .8125rem; margin-top: var(--space-1); }
+
+/* ── Tabs ─────────────────────────────────────────────────────────────────── */
+.tabx {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--line);
+}
+.tabx-btn {
+  border: 0;
+  background: none;
+  padding: var(--space-3) var(--space-4);
+  color: var(--slate);
+  font-weight: 500;
+  font-size: .9375rem;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: color var(--dur-fast), border-color var(--dur-fast);
+  min-height: 44px;
+}
+.tabx-btn:hover { color: var(--ink); }
+.tabx-btn[aria-selected="true"], .tabx-btn.on {
+  color: var(--ink);
+  font-weight: 600;
+  border-bottom-color: var(--signal);
+}
+
+/* ── Slot and date picker ─────────────────────────────────────────────────── */
+.date-strip {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: var(--space-2);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.date-strip::-webkit-scrollbar { display: none; }
+
+.day-btn {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  border: 1.5px solid var(--line);
+  background: var(--white);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-out);
+  min-width: 56px;
+  min-height: 64px;
+  line-height: 1.3;
+}
+.day-btn:hover:not(:disabled) { border-color: var(--signal); background: var(--signal-tint); }
+.day-btn.sel { background: var(--signal); color: var(--white); border-color: var(--signal); }
+.day-btn:disabled { opacity: .35; cursor: not-allowed; }
+.day-btn .day-name { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; opacity: .7; }
+.day-btn .day-num  { font-size: 1.25rem; font-weight: 700; }
+
+.slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: var(--space-2); }
+.slot-btn {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  border: 1.5px solid var(--line);
+  background: var(--white);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-1);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-out);
+  font-size: .875rem;
+  min-height: 44px;
+}
+.slot-btn.open:hover { border-color: var(--signal); background: var(--signal-tint); transform: translateY(-2px); }
+.slot-btn.booked { background: var(--line); color: var(--slate); cursor: not-allowed; }
+.slot-btn.sel { background: var(--signal); color: var(--white); border-color: var(--signal); }
+
+.slot-section-label {
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--slate);
+  font-weight: 600;
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+/* ── ECG Pulse line ───────────────────────────────────────────────────────── */
+.pulse-line {
+  width: 100%;
+  display: block;
+  overflow: visible;
+}
+.pulse-line path {
+  fill: none;
+  stroke: var(--signal);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+}
+.pulse-line.drawn path { animation: draw-pulse 1.8s var(--ease-out) forwards; }
+@keyframes draw-pulse { to { stroke-dashoffset: 0; } }
+
+/* Beating pulse (replaces spinners and "· · ·") */
+.beat-pulse {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  color: var(--signal);
+  font-family: var(--font-mono);
+  font-size: .9375rem;
+}
+.beat-pulse span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--signal);
+  animation: pulse-dot .9s ease-in-out infinite;
+}
+.beat-pulse span:nth-child(2) { animation-delay: .15s; }
+.beat-pulse span:nth-child(3) { animation-delay: .3s; }
+@keyframes pulse-dot { 0%, 80%, 100% { transform: scale(1); opacity: .5; } 40% { transform: scale(1.4); opacity: 1; } }
+
+/* ── Skeleton loading ─────────────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--line) 25%, var(--paper) 50%, var(--line) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-sweep 1.4s infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes skeleton-sweep { to { background-position: -200% 0; } }
+
+/* ── Stat cards ───────────────────────────────────────────────────────────── */
+.stat-card { text-align: center; }
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: var(--signal);
+  line-height: 1;
+}
+.stat-label { font-size: .875rem; color: var(--slate); margin-top: var(--space-1); }
+
+/* ── Toast notifications ──────────────────────────────────────────────────── */
+.toast-container {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+.toast-item {
+  pointer-events: all;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--signal);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-5);
+  box-shadow: var(--shadow-md);
+  font-size: .9375rem;
+  max-width: 340px;
+  animation: toast-in var(--dur-med) var(--ease-out),
+             toast-out var(--dur-med) var(--ease-out) 3.5s forwards;
+  min-width: 220px;
+}
+.toast-item.err { border-left-color: var(--pulse); }
+@keyframes toast-in  { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+@keyframes toast-out { from { opacity: 1; } to { opacity: 0; transform: translateX(20px); } }
+
+/* ── Timeline (appointment detail) ───────────────────────────────────────── */
+.timeline { list-style: none; padding: 0; margin: 0; position: relative; }
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 10px; top: 6px; bottom: 6px;
+  width: 2px;
+  background: var(--line);
+}
+.timeline li {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+  padding: var(--space-2) 0;
+  position: relative;
+}
+.timeline-dot {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--signal-tint);
+  border: 2px solid var(--signal);
+  margin-top: 2px;
+  z-index: 1;
+}
+.timeline-dot.first { background: var(--signal); }
+
+/* ── Booking confirmation panel ───────────────────────────────────────────── */
+.booking-summary {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  box-shadow: var(--shadow);
+}
+@media (min-width: 992px) {
+  .booking-summary-sticky {
+    position: sticky;
+    top: calc(60px + var(--space-4));
+  }
+}
+
+/* ── Hero section ────────────────────────────────────────────────────────── */
+.hero-section {
+  padding: var(--space-8) 0 var(--space-7);
+  position: relative;
+  overflow: hidden;
+}
+.hero-section h1 {
+  font-size: clamp(2.4rem, 6vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  max-width: 14ch;
+}
+.hero-tagline {
+  max-width: 46ch;
+  color: var(--slate);
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  margin: var(--space-4) 0 var(--space-5);
+}
+
+/* ECG monitor panel */
+.vitals-panel {
+  background: var(--ink);
+  border-radius: var(--radius);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  color: var(--signal);
+  font-family: var(--font-mono);
+  position: relative;
+  overflow: hidden;
+}
+.vitals-panel .panel-label { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; opacity: .6; }
+.vitals-panel .panel-value { font-size: 1.5rem; font-weight: 700; }
+.vitals-panel .ecg-trace { margin-top: var(--space-3); }
+.vitals-panel .ecg-trace path { stroke: var(--signal); }
+.vitals-tick { animation: tick 1s steps(1) infinite; }
+@keyframes tick { 50% { opacity: 0; } }
+
+/* Step sequence */
+.steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-5); }
+.step-card {
+  text-align: center;
+  padding: var(--space-5);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.step-num {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--signal);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  display: grid;
+  place-items: center;
+  margin: 0 auto var(--space-3);
+}
+.step-connector { display: none; }
+
+/* Specialization chips */
+.spec-grid { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.spec-chip {
+  padding: var(--space-2) var(--space-4);
+  border: 1.5px solid var(--line);
+  border-radius: 99px;
+  font-size: .875rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--slate);
+  background: var(--white);
+  transition: all var(--dur-fast);
+}
+.spec-chip:hover { border-color: var(--signal); color: var(--signal); background: var(--signal-tint); }
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.site-footer {
+  background: var(--ink);
+  color: var(--footer-muted);
+  padding: var(--space-7) 0 var(--space-5);
+  margin-top: var(--space-8);
+  font-size: .9rem;
+}
+.site-footer a { color: var(--footer-muted); text-decoration: none; }
+.site-footer a:hover { color: var(--paper); }
+.site-footer h3 { color: var(--paper); font-size: 1rem; margin-bottom: var(--space-3); }
+.footer-brand { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--paper); }
+
+/* ── Alerts / Messages ────────────────────────────────────────────────────── */
+.alert {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  padding: var(--space-3) var(--space-4);
+}
+.alert-success { background: var(--signal-tint); border-color: var(--signal-mid); color: var(--success-ink); }
+.alert-danger  { background: var(--pulse-tint);  border-color: var(--pulse-tint);  color: var(--danger-ink); }
+
+/* ── Doctor profile sticky summary ────────────────────────────────────────── */
+.summary-box {
+  background: var(--white);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  box-shadow: var(--shadow);
+}
+.summary-box.selected-state {
+  border-color: var(--signal);
+  box-shadow: 0 0 0 3px var(--signal-tint), var(--shadow);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 576px) {
+  .container { padding-inline: var(--space-4); }
+  .cardx { padding: var(--space-4); }
+  .hero-section { padding: var(--space-6) 0; }
+  .toast-container { left: var(--space-3); right: var(--space-3); bottom: var(--space-3); }
+  .toast-item { max-width: 100%; }
+  .stat-number { font-size: 2.1rem; }
+}
+
+@media (max-width: 768px) {
+  .step-connector { display: none !important; }
+  .doctor-card:hover { transform: none; } /* disable 3D on touch */
+  .booking-summary-sticky { position: static; }
+}
+
+/* ── Accessibility: reduced motion ────────────────────────────────────────── */
+.stat-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.stat-card-link:hover { color: inherit; border-color: var(--signal); }
+.stat-card.on { border-color: var(--signal); box-shadow: 0 0 0 3px var(--signal-tint); }
+
+.booking-sheet {
+  display: none;
+}
+
+.fee-mono, .time-mono, .id-mono {
+  font-family: var(--font-mono);
+}
+
+.hint-disabled {
+  font-size: .8125rem;
+  color: var(--slate);
+  cursor: help;
+  border-bottom: 1px dashed var(--line);
+}
+
+.doc-name { font-family: var(--font-display); }
+
+.queue-time {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+@media (max-width: 991.98px) {
+  .booking-sheet {
+    display: flex;
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    margin-inline: calc(-1 * var(--space-4));
+    padding: var(--space-3) var(--space-4);
+    background: var(--white);
+    border-top: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 72px;
+  }
+  .desktop-book-actions { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .pulse-line.drawn path { stroke-dashoffset: 0; animation: none; }
+  .skeleton { animation: none; background: var(--line); }
+}

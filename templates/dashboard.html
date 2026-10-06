@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Queue — MediSlot{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h1>Doctor dashboard</h1>
+  <p class="muted mb-0">Today’s timeline, status changes, and weekly stats.</p>
+</div>
+
+<div class="row g-3 mb-5">
+  <div class="col-6 col-md-4 col-lg">
+    <a class="cardx stat-card stat-card-link {% if when == 'today' %}on{% endif %}" href="{% url 'dashboard' %}?when=today">
+      <div class="stat-number">{{ stats.today }}</div>
+      <div class="stat-label">Today</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-lg">
+    <a class="cardx stat-card stat-card-link {% if when == 'week' %}on{% endif %}" href="{% url 'dashboard' %}?when=week">
+      <div class="stat-number">{{ stats.week }}</div>
+      <div class="stat-label">Next 7 days</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-lg">
+    <div class="cardx stat-card">
+      <div class="stat-number" style="color:var(--amber)">{{ stats.pending }}</div>
+      <div class="stat-label">Pending</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg">
+    <div class="cardx stat-card">
+      <div class="stat-number">{{ stats.completed_week }}</div>
+      <div class="stat-label">Completed (7d)</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-lg">
+    <div class="cardx stat-card">
+      <div class="stat-number" style="color:var(--pulse)">{{ stats.no_shows }}</div>
+      <div class="stat-label">No-shows</div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex gap-2 mb-3 flex-wrap">
+  <a class="btn-out btn-sm {% if when == 'today' %}fw-bold{% endif %}" href="{% url 'dashboard' %}?when=today">Today</a>
+  <a class="btn-out btn-sm {% if when == 'week' %}fw-bold{% endif %}" href="{% url 'dashboard' %}?when=week">This week</a>
+  <a class="btn-out btn-sm {% if when == 'upcoming' %}fw-bold{% endif %}" href="{% url 'dashboard' %}?when=upcoming">Later</a>
+  <a class="btn-out btn-sm {% if when == 'past' %}fw-bold{% endif %}" href="{% url 'dashboard' %}?when=past">Past</a>
+</div>
+
+<div class="cardx p-0 overflow-hidden">
+  <div class="px-4 py-3" style="border-bottom:1px solid var(--line)">
+    <h2 class="mb-0 fs-5">Appointment timeline</h2>
+  </div>
+  <div class="p-4">
+    {% if appts %}
+      {% for a in appts %}
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 py-3" style="border-bottom:1px solid var(--line)"
+           x-data="statusRow({{ a.id }}, '{{ a.status }}', '{{ a.get_status_display|escapejs }}', {{ a.allowed_json|safe }})">
+        <div class="queue-time" style="min-width:88px">{{ a.slot.start|time:"H:i" }}</div>
+        <div class="flex-grow-1">
+          <div class="fw-medium">{{ a.patient.display_name }}</div>
+          <div class="muted" style="font-size:.8125rem">
+            {% if a.patient.phone %}
+              <a href="tel:{{ a.patient.phone }}">{{ a.patient.phone }}</a>
+            {% else %}
+              No phone on file
+            {% endif %}
+            · {{ a.patient.email }}
+          </div>
+        </div>
+        <span class="badge-status" :class="'s-' + status" x-text="label"></span>
+        <div class="dropdown" x-show="allowed.length > 0">
+          <button class="btn-out btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" :disabled="busy" aria-expanded="false">Update</button>
+          <ul class="dropdown-menu dropdown-menu-end" style="font-size:.875rem">
+            <template x-for="t in allowed" :key="t">
+              <li><button class="dropdown-item" type="button" @click="set(t)">Mark as <span x-text="t.replace('_',' ')"></span></button></li>
+            </template>
+          </ul>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="muted mb-0 text-center py-4">Nothing in this view.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

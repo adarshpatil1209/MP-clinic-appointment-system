@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %}Dr. {{ doc.user.display_name }} — MediSlot{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <a href="{% url 'doctors' %}" class="muted text-decoration-none" style="font-size:.875rem">← Back to doctors</a>
+</div>
+
+<div class="row g-5" x-data='picker({{ doc.id }}, {{ days_json|safe }}, "Dr. {{ doc.user.display_name|escapejs }}", {{ doc.fee }})'>
+  <div class="col-lg-4">
+    <div class="summary-box booking-summary-sticky">
+      <div class="d-flex gap-3 align-items-center mb-4">
+        <div class="avatar avatar-lg" style="view-transition-name:doc-{{ doc.id }}" aria-hidden="true">{{ doc.user.initials }}</div>
+        <div>
+          <h2 class="mb-0 fs-4 doc-name">Dr. {{ doc.user.display_name }}</h2>
+          <div class="text-uppercase" style="font-size:.8rem;letter-spacing:.05em;color:var(--slate)">{{ doc.specialization }}</div>
+        </div>
+      </div>
+      <div class="d-grid gap-3" style="font-size:.9375rem">
+        <div class="d-flex justify-content-between"><span class="muted">Experience</span><span>{{ doc.experience_years }} years</span></div>
+        <div class="d-flex justify-content-between"><span class="muted">Fee</span><span class="fee-mono">₹{{ doc.fee|floatformat:0 }}</span></div>
+      </div>
+      {% if doc.bio %}
+        <hr style="border-color:var(--line);margin:var(--space-4) 0">
+        <p class="mb-0 muted" style="font-size:.9rem">{{ doc.bio }}</p>
+      {% endif %}
+      <div class="desktop-book-actions mt-4 pt-4" style="border-top:1px solid var(--line)">
+        <div class="muted small mb-2">Booking summary</div>
+        <div class="time-mono mb-3" x-text="sel ? (formatDate(date) + ' · ' + sel.time) : 'Select a slot'"></div>
+        <button class="btn-sig w-100 justify-content-center" type="button" :disabled="!sel || booked" @click="review()">Review booking</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="cardx">
+      <h3 class="mb-4">Book appointment</h3>
+      <div x-show="daysWithSlots.length > 0">
+        <div class="date-strip mb-4" role="listbox" aria-label="Dates with open slots">
+          <template x-for="d in daysWithSlots" :key="d">
+            <button type="button" class="day-btn" :class="date === d ? 'sel' : ''" @click="pick(d)" :aria-selected="date === d">
+              <div class="day-name" x-text="weekday(d)"></div>
+              <div class="day-num" x-text="dayNum(d)"></div>
+            </button>
+          </template>
+        </div>
+
+        <div aria-live="polite" class="visually-hidden" x-text="loading ? 'Loading slots' : (error || (slots.length + ' slots loaded'))"></div>
+
+        <div x-show="loading" class="py-4">
+          <div class="beat-pulse" aria-hidden="true"><span></span><span></span><span></span></div>
+          <span class="ms-2 muted">Loading slots</span>
+        </div>
+
+        <div x-show="error && !loading" class="alert alert-danger" x-text="error" role="alert" aria-live="assertive" style="display:none"></div>
+
+        <div x-show="!loading && !error" style="display:none">
+          <div x-show="slots.length === 0" class="text-center py-4 muted">No slots available for this day.</div>
+          <div x-show="slots.length > 0">
+            <div x-show="morningSlots.length > 0">
+              <div class="slot-section-label">Morning</div>
+              <div class="slot-grid mb-3" role="group" aria-label="Morning slots">
+                <template x-for="s in morningSlots" :key="s.id">
+                  <button type="button" class="slot-btn" :class="{ booked: s.status !== 'open', open: s.status === 'open', sel: sel && sel.id === s.id }" :disabled="s.status !== 'open'" @click="sel = s" :aria-pressed="sel && sel.id === s.id" x-text="s.time"></button>
+                </template>
+              </div>
+            </div>
+            <div x-show="afternoonSlots.length > 0">
+              <div class="slot-section-label">Afternoon</div>
+              <div class="slot-grid mb-3" role="group" aria-label="Afternoon slots">
+                <template x-for="s in afternoonSlots" :key="s.id">
+                  <button type="button" class="slot-btn" :class="{ booked: s.status !== 'open', open: s.status === 'open', sel: sel && sel.id === s.id }" :disabled="s.status !== 'open'" @click="sel = s" :aria-pressed="sel && sel.id === s.id" x-text="s.time"></button>
+                </template>
+              </div>
+            </div>
+            <div x-show="eveningSlots.length > 0">
+              <div class="slot-section-label">Evening</div>
+              <div class="slot-grid mb-3" role="group" aria-label="Evening slots">
+                <template x-for="s in eveningSlots" :key="s.id">
+                  <button type="button" class="slot-btn" :class="{ booked: s.status !== 'open', open: s.status === 'open', sel: sel && sel.id === s.id }" :disabled="s.status !== 'open'" @click="sel = s" :aria-pressed="sel && sel.id === s.id" x-text="s.time"></button>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div x-show="daysWithSlots.length === 0" class="text-center py-5 muted" style="display:none">
+        <h4>No upcoming availability</h4>
+        <p>This doctor has not opened any slots yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-sheet" data-sheet>
+    <div class="sheet-grip" role="button" tabindex="0" aria-label="Expand booking summary"></div>
+    <div class="sheet-row">
+      <div>
+        <div class="muted" style="font-size:.75rem">Selected</div>
+        <div class="time-mono" x-text="sel ? (formatDate(date) + ' · ' + sel.time) : 'Pick a time'"></div>
+      </div>
+      <button class="btn-sig" type="button" :disabled="!sel || booked" @click="review()">Review</button>
+    </div>
+    <dl class="sheet-more">
+      <div class="d-flex justify-content-between"><dt class="muted">Doctor</dt><dd class="mb-0" x-text="doctorName"></dd></div>
+      <div class="d-flex justify-content-between"><dt class="muted">When</dt><dd class="mb-0 time-mono" x-text="sel ? (formatDate(date) + ' · ' + sel.time) : '–'"></dd></div>
+      <div class="d-flex justify-content-between"><dt class="muted">Fee</dt><dd class="mb-0 fee-mono">₹<span x-text="fee"></span></dd></div>
+      <button class="btn-sig w-100 mt-2" type="button" :disabled="!sel || booked" @click="confirmBook()">Confirm booking</button>
+    </dl>
+  </div>
+
+  <div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0" style="border-radius:var(--radius);box-shadow:var(--shadow-lg)">
+        <div class="modal-body p-4">
+          <div x-show="!booked">
+            <h3 id="bookModalTitle" class="mb-3">Confirm booking</h3>
+            <dl class="row mb-4">
+              <dt class="col-4 muted">Doctor</dt><dd class="col-8" x-text="doctorName"></dd>
+              <dt class="col-4 muted">Date</dt><dd class="col-8 time-mono" x-text="date ? formatDate(date) : ''"></dd>
+              <dt class="col-4 muted">Time</dt><dd class="col-8 time-mono" x-text="sel ? sel.time : ''"></dd>
+              <dt class="col-4 muted">Fee</dt><dd class="col-8 fee-mono">₹<span x-text="fee"></span></dd>
+            </dl>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn-out" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn-sig" @click="confirmBook()">Confirm</button>
+            </div>
+          </div>
+          <div x-show="booked" style="display:none" class="text-center py-3">
+            <h3 class="mb-2">Confirmed</h3>
+            <p class="muted mb-0">Redirecting to your appointment…</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

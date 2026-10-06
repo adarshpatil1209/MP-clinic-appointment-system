@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Appointment {{ appt.id }} — MediSlot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="mb-3">
+      <a href="{% url 'appointments' %}" class="muted text-decoration-none" style="font-size:.875rem">← My appointments</a>
+    </div>
+    <div class="cardx">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+        <h1 class="mb-0">Appointment <span class="id-mono">#{{ appt.id }}</span></h1>
+        {% include "_badge.html" with status=appt.status label=appt.get_status_display %}
+      </div>
+      <div class="row g-4 mb-4">
+        <div class="col-sm-6">
+          <div class="muted small">Doctor</div>
+          <div class="doc-name">{{ appt.slot.doctor }}</div>
+          <div class="muted">{{ appt.slot.doctor.specialization }}</div>
+        </div>
+        <div class="col-sm-6">
+          <div class="muted small">Patient</div>
+          <div>{{ appt.patient.display_name }}</div>
+          <div class="muted">{{ appt.patient.email }}</div>
+        </div>
+        <div class="col-sm-6">
+          <div class="muted small">Date &amp; time</div>
+          <div class="time-mono">{{ appt.slot.start|date:"l, d M Y" }} · {{ appt.slot.start|time:"H:i" }}</div>
+          <div class="muted" data-rel-time="{{ appt.slot.start|date:'c' }}"></div>
+        </div>
+        <div class="col-sm-6">
+          <div class="muted small">Fee</div>
+          <div class="fee-mono">₹{{ appt.slot.doctor.fee|floatformat:0 }}</div>
+        </div>
+      </div>
+
+      <h2 class="fs-5 mb-3">Status history</h2>
+      <ol class="timeline mb-4">
+        {% for l in appt.logs.all %}
+          <li>
+            <span class="timeline-dot {% if forloop.first %}first{% endif %}" aria-hidden="true"></span>
+            <div>
+              <div class="fw-medium">{{ l.old_status|default:"created" }} → {{ l.new_status }}</div>
+              <div class="muted small time-mono">{{ l.changed_at|date:"d M Y H:i" }}{% if l.changed_by %} · {{ l.changed_by.display_name }}{% endif %}</div>
+            </div>
+          </li>
+        {% empty %}
+          <li class="muted">No history yet.</li>
+        {% endfor %}
+      </ol>
+
+      {% if appt.can_cancel %}
+        <button type="button" class="btn-del" data-cancel-open data-id="{{ appt.id }}" data-label="this appointment on {{ appt.slot.start|date:'d M, H:i' }}">Cancel appointment</button>
+      {% elif appt.status == 'pending' or appt.status == 'confirmed' %}
+        <span class="hint-disabled" title="Cancellations close {{ cancel_cutoff_hours }} hours before the appointment.">Cancellation is closed for this visit.</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0" style="border-radius:var(--radius);box-shadow:var(--shadow-lg)">
+      <div class="modal-body p-4">
+        <h3 id="cancelModalTitle">Cancel appointment?</h3>
+        <p class="muted" id="cancelModalLabel"></p>
+        <form method="post" id="cancelModalForm">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="detail">
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn-out" data-bs-dismiss="modal">Keep it</button>
+            <button type="submit" class="btn-del">Yes, cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

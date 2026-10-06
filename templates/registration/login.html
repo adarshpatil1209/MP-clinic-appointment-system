@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Log In — MediSlot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="cardx mt-4">
+      <h2 class="text-center mb-4">Welcome Back</h2>
+      
+      <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}
+          {% if form.username.errors %}<div class="form-error">{{ form.username.errors.0 }}</div>{% endif %}
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+          {{ form.password }}
+          {% if form.password.errors %}<div class="form-error">{{ form.password.errors.0 }}</div>{% endif %}
+        </div>
+        
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger mb-4 py-2">{{ form.non_field_errors.0 }}</div>
+        {% endif %}
+        
+        <button type="submit" class="btn-sig w-100 justify-content-center">Log In</button>
+        
+        <div class="text-center mt-4">
+          <span class="text-muted" style="font-size: .875rem;">Don't have an account?</span> 
+          <a href="{% url 'register' %}" class="fw-medium ms-1" style="font-size: .875rem;">Register</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

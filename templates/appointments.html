@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}My Appointments — MediSlot{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <h1>My appointments</h1>
+  <a href="{% url 'doctors' %}" class="btn-sig btn-sm">Book new</a>
+</div>
+
+<div class="cardx p-0 overflow-hidden" x-data="{ tab: 'upcoming' }">
+  <div class="tabx px-3 pt-2" role="tablist" aria-label="Appointment lists">
+    <button class="tabx-btn" type="button" role="tab" id="tab-upcoming" :aria-selected="tab === 'upcoming'" aria-controls="panel-upcoming" :class="{ on: tab === 'upcoming' }" @click="tab = 'upcoming'">Upcoming</button>
+    <button class="tabx-btn" type="button" role="tab" id="tab-past" :aria-selected="tab === 'past'" aria-controls="panel-past" :class="{ on: tab === 'past' }" @click="tab = 'past'">Past</button>
+    <button class="tabx-btn" type="button" role="tab" id="tab-cancelled" :aria-selected="tab === 'cancelled'" aria-controls="panel-cancelled" :class="{ on: tab === 'cancelled' }" @click="tab = 'cancelled'">Cancelled</button>
+  </div>
+
+  <div class="p-4">
+    <div id="panel-upcoming" role="tabpanel" aria-labelledby="tab-upcoming" x-show="tab === 'upcoming'">
+      {% if upcoming %}
+        {% for a in upcoming %}
+          {% include "_appointment_row.html" with show_cancel=True relative=True %}
+        {% endfor %}
+      {% else %}
+        <div class="text-center py-5">
+          <h4>No upcoming appointments</h4>
+          <p class="muted">You have nothing scheduled yet.</p>
+          <a href="{% url 'doctors' %}" class="btn-sig mt-2">Find a doctor</a>
+        </div>
+      {% endif %}
+    </div>
+    <div id="panel-past" role="tabpanel" aria-labelledby="tab-past" x-show="tab === 'past'" style="display:none">
+      {% if past %}
+        {% for a in past %}
+          {% include "_appointment_row.html" with show_cancel=False relative=False %}
+        {% endfor %}
+      {% else %}
+        <p class="muted mb-0">No past appointments.</p>
+      {% endif %}
+    </div>
+    <div id="panel-cancelled" role="tabpanel" aria-labelledby="tab-cancelled" x-show="tab === 'cancelled'" style="display:none">
+      {% if cancelled %}
+        {% for a in cancelled %}
+          {% include "_appointment_row.html" with show_cancel=False relative=False %}
+        {% endfor %}
+      {% else %}
+        <p class="muted mb-0">No cancelled appointments.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0" style="border-radius:var(--radius);box-shadow:var(--shadow-lg)">
+      <div class="modal-body p-4">
+        <h3 id="cancelModalTitle" class="mb-3">Cancel appointment?</h3>
+        <p class="muted" id="cancelModalLabel">This cannot be undone.</p>
+        <form method="post" id="cancelModalForm">
+          {% csrf_token %}
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn-out" data-bs-dismiss="modal">Keep it</button>
+            <button type="submit" class="btn-del">Yes, cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

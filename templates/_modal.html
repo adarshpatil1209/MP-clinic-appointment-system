@@ -1,0 +1,9 @@
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1" aria-labelledby="{{ modal_id }}-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0" style="border-radius:var(--radius);box-shadow:var(--shadow-lg)">
+      <div class="modal-body p-4">
+        {% block modal_body %}{% endblock %}
+      </div>
+    </div>
+  </div>
+</div>

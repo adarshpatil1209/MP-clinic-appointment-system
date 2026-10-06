@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}My Profile — MediSlot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <div class="cardx mt-3">
+      <div class="d-flex gap-3 align-items-center mb-4 pb-4 border-bottom border-light-subtle">
+        <div class="avatar avatar-lg">{{ user.initials }}</div>
+        <div>
+          <h2 class="mb-0 fs-4">{{ user.display_name }}</h2>
+          <div class="text-muted" style="font-size:.875rem">{{ user.email }}</div>
+        </div>
+      </div>
+      
+      <form method="post">
+        {% csrf_token %}
+        
+        <h3 class="fs-5 mb-3">Personal Details</h3>
+        
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ form.first_name.id_for_label }}">First Name</label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}<div class="form-error">{{ form.first_name.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="{{ form.last_name.id_for_label }}">Last Name</label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}<div class="form-error">{{ form.last_name.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label" for="{{ form.email.id_for_label }}">Email Address</label>
+          {{ form.email }}
+          {% if form.email.errors %}<div class="form-error">{{ form.email.errors.0 }}</div>{% endif %}
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label" for="{{ form.phone.id_for_label }}">Phone Number</label>
+          {{ form.phone }}
+          {% if form.phone.errors %}<div class="form-error">{{ form.phone.errors.0 }}</div>{% endif %}
+        </div>
+        
+        <div class="d-flex justify-content-end gap-2">
+          <a href="{% url 'appointments' %}" class="btn-out">Cancel</a>
+          <button type="submit" class="btn-sig" name="save_profile">Save Changes</button>
+        </div>
+      </form>
+      
+      <hr class="my-4">
+      
+      <h3 class="fs-5 mb-3">Change Password</h3>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label" for="{{ pw_form.old_password.id_for_label }}">{{ pw_form.old_password.label }}</label>
+          {{ pw_form.old_password }}
+          {% if pw_form.old_password.errors %}<div class="form-error">{{ pw_form.old_password.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="{{ pw_form.new_password1.id_for_label }}">{{ pw_form.new_password1.label }}</label>
+          {{ pw_form.new_password1 }}
+          {% if pw_form.new_password1.errors %}<div class="form-error">{{ pw_form.new_password1.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="{{ pw_form.new_password2.id_for_label }}">{{ pw_form.new_password2.label }}</label>
+          {{ pw_form.new_password2 }}
+          {% if pw_form.new_password2.errors %}<div class="form-error">{{ pw_form.new_password2.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+          <a href="{% url 'appointments' %}" class="btn-out">Cancel</a>
+          <button type="submit" class="btn-sig" name="change_password">Change Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

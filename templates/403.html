@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}403 Forbidden — MediSlot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 50vh;">
+  <div class="col-md-6 text-center">
+    <div class="display-1 fw-bold text-signal mb-2" style="font-family: var(--font-mono)">403</div>
+    <h2 class="mb-3">Access Denied</h2>
+    <p class="text-muted mb-4">
+      {% if user.is_authenticated %}
+        You are signed in as a {{ user.role }}. This page is restricted to certain roles.
+      {% else %}
+        You do not have permission to view this page. This area might be restricted to certain roles.
+      {% endif %}
+    </p>
+    
+    <div class="d-flex justify-content-center gap-2">
+      <a href="javascript:history.back()" class="btn-out"><i class="bi bi-arrow-left me-2"></i>Go Back</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'home' %}" class="btn-sig">Go to my home</a>
+      {% else %}
+        <a href="{% url 'landing' %}" class="btn-sig"><i class="bi bi-house me-2"></i>Home</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
