@@ -1,82 +1,123 @@
-# MediSlot
+# MediSlot — Clinic Appointment System
 
-A robust clinic appointment system built with Django, PostgreSQL, and Alpine.js. Designed for a 4-person college project, MediSlot handles real-time concurrency for bookings, ensuring zero double-bookings through database-level row locks.
+[![Django Version](https://shields.io)](https://djangoproject.com)
+[![PostgreSQL](https://shields.io)](https://postgresql.org)
+[![Alpine.js](https://shields.io)](https://alpinejs.dev)
+[![License](https://shields.io)](https://github.com)
+
+MediSlot is a high-concurrency, robust clinic appointment scheduling system built for modern medical environments. Designed as a 4-person engineering college capstone project, it handles high-volume booking traffic without allowing double-bookings, backed by strict database-level row isolation and transactional state rules.
+
+---
 
 ## Core Features
 
-- **Concurrency-Safe Booking**: Appointments use `select_for_update()` to handle race conditions safely. No double-bookings, even if two users click at the same millisecond.
-- **Role-Based Access**: Specialized dashboards for Patients (discover doctors, book, cancel) and Doctors (manage availability, view queue, update statuses).
-- **Idempotent Slot Generation**: Doctors define weekly availability rules, and a management command generates the actual time slots.
-- **Modern UI**: Custom CSS token system, fully responsive, zero-dependency layout structure using Bootstrap grid, and reactive elements powered by Alpine.js.
+### Concurrency-Safe Bookings
+* Leverages PostgreSQL explicit row-level locking via `select_for_update()`.
+* Guarantees zero double-bookings even if multiple patients attempt to claim the exact same time slot at the identical millisecond.
 
-## Tech Stack
+### Role-Based Dynamic Access
+* **Patient Hub:** Discover available specialists, manage real-time queues, and book or cancel slots.
+* **Doctor Dashboard:** Set availability rules, track upcoming daily queues, and modify clinical status variations instantly.
 
-- **Backend**: Django 5.x, Python 3.10+
-- **Database**: PostgreSQL (Required for `select_for_update` row-locking)
-- **Frontend**: HTML/CSS (Custom Tokens), Bootstrap 5 (Grid/Utils), Alpine.js (Lightweight reactivity)
+### Idempotent Slot Generation Engine
+* Systemized scheduling architecture where doctors input general availability templates.
+* An optimized background management command processes the templates to render real-time bookable slots sequentially.
 
-## Setup Instructions
+### Tokenized UI Architecture
+* Crafted on a decoupled architecture featuring a custom CSS token design system (`tokens.css`).
+* Fully responsive layout structure leveraging Bootstrap 5 Grid for the structural skeleton and Alpine.js for low-latency reactive client interactions.
+
+---
+
+## Tech Stack Matrix
+
+| Architecture Layer | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Backend Framework** | Python 3.10+ / Django 6.1 | MVC engine, database transaction controls, and core controllers. |
+| **Database Engine** | PostgreSQL | Essential production-ready engine required to support sequential row-locking blocks. |
+| **Client Reactivity** | Vanilla JavaScript / Alpine.js | Lightweight DOM management without the overhead of heavy SPA frameworks. |
+| **Design System** | Custom Utility CSS & Bootstrap 5 | Uniform color variables, design tokens, and fluid layout grids. |
+
+---
+
+## Project Structure Guide
+
+```text
+├── core/
+│   ├── models.py              # Database Schema & State-Machine Transition Rules (TRANSITIONS)
+│   ├── services.py            # Isolated Business Logic Layer (Booking, Canceling, Mutations)
+│   ├── views.py               # Lean request handlers exposing HTML & JSON API endpoints
+│   └── tests.py               # Multithreaded TransactionTestCase suites validating locks
+├── static/
+│   ├── css/
+│   │   ├── tokens.css         # Central Design Tokens (Colors, variables, typography)
+│   │   └── app.css            # Component-level layout modifiers
+│   └── js/
+│       └── app.js             # Reactive Alpine.js operations & shared utility hooks
+└── templates/                 # Decoupled semantic HTML5 partials extending base templates
+```
+
+---
+
+## Installation and Setup
 
 ### 1. Environment Configuration
-
-Copy the example environment file and update it with your database credentials.
-
+Clone the repository, create your local configuration environment, and adjust the variables to align with your setup credentials:
 ```bash
 cp .env.example .env
 ```
-Ensure your local PostgreSQL instance is running and you have created a database named `medislot`.
+*Note: Ensure your local PostgreSQL server instance is running and that you have provisioned an empty database schema named `medislot` before continuing.*
 
-### 2. Install Dependencies
-
+### 2. Install Project Dependencies
+Spin up a fresh Python virtual environment and install the required modules:
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# On macOS/Linux:
+source venv/bin/activate  
+
+# On Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+
 pip install -r requirements.txt
 ```
 
-### 3. Database Migration & Seeding
-
-Apply the migrations to setup the schema:
-
+### 3. Database Initialization & Seeding
+Run structural schema builds, deploy base seed models, and generate the scheduling horizons:
 ```bash
+# Compile and run core schemas
 python manage.py migrate
-```
 
-Generate sample doctors, patients, and availability rules:
-
-```bash
+# Seed dummy doctors, patient records, and base rules
 python manage.py seed
-```
 
-Generate the actual bookable slots for the upcoming weeks:
-
-```bash
+# Auto-generate actual bookable calendar slots for the next 14 days
 python manage.py generate_slots --days 14
 ```
+*Production Deployment Note: The `generate_slots` script is designed to run asynchronously through an automated worker task or cron runner to maintain future slot availability seamlessly.*
 
-*Note: You should run `generate_slots` periodically (e.g., via cron) to keep slots topped up.*
-
-### 4. Run the Server
-
+### 4. Run the Development Server
+Boot the Django local execution process:
 ```bash
 python manage.py runserver
 ```
-Visit `http://localhost:8000`.
+Open your browser and navigate directly to: `http://127.0.0.1:8000`
 
-## Architecture Guide: Where Logic Lives
+---
 
-- **`core/models.py`**: Defines the schema. Status transition map (`TRANSITIONS`) lives here to guarantee state machine logic.
-- **`core/services.py`**: Contains all critical business logic. Booking an appointment, cancelling, and updating statuses happen here. This keeps views thin and testable.
-- **`core/views.py`**: Standard Django views. API endpoints for slots and booking return JSON to be consumed by Alpine.js.
-- **`core/tests.py`**: Comprehensive test suite. Includes `TransactionTestCase` with Python threads to verify database row-locking behavior.
-- **`templates/`**: HTML templates extending `base.html`.
-- **`static/css/tokens.css`**: The design system. All colors, spacing, and typography are defined as CSS variables.
-- **`static/js/app.js`**: Shared JavaScript functions and Alpine.js data components.
+## Automated Verification Testing
 
-## Automated Tests
-
-Run the test suite to verify business logic and concurrency locks:
-
+Verify structural isolation and database thread locking by running the local test utility:
 ```bash
 python manage.py test core
 ```
+*The test framework initiates parallel Python runtime threads executing concurrent booking workloads inside a comprehensive `TransactionTestCase` sequence to confirm lock execution safety under load.*
+
+---
+
+## Development Team
+Developed as an engineering project by:
+* **Adarsh Patil** — *Lead Developer / Repository Maintainer* — [@adarshpatil1209](https://github.com)
+* *Project Team Member 2*
+* *Project Team Member 3*
+* *Project Team Member 4*
